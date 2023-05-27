@@ -1,3 +1,5 @@
+[![Buy Me a Coffee](https://www.codehim.com/wp-content/uploads/2022/09/bmc-button.png)](https://www.buymeacoffee.com/juanegameryt)
+
 ### YouTube-Downloader
 
 ## Español
