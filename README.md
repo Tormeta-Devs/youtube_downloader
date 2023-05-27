@@ -10,32 +10,36 @@ Esto descarga el archivo .mp3 solamente, despues añadire la opcion de elegir en
 
 # Como utilizarlo.
 
+Deberás ejecutar si te encuentras en windows el archivo instalar.bat, ya que esto copiara la carpeta FFmpeg a C:/ para que el programa lo utilize correctamente. 
+
 Para utilizarlo debes abrir un cmd. 
-'''
+```
 Win + R > cmd > Ejecutrar
-'''
+```
 Luego te dirijes a la carpeta donde ayas descargado el archivo.
 EJ: cd desktop/YouTube-Dowloader 
-'''
+```
 cd 
-'''
+```
+```
 Luego instalas los paquetes requeridos para ejecutar el archivo:
-'''
+```
+```
 pip install youtube-dl
-'''
-'''
+```
+```
 pip install tkinter
-'''
-'''
+```
+```
 pip install youtube-search-python
-'''
-'''
+```
+```
 pip install youtube-dl
-'''
-Y si tienes python instalado solo tienes que poner
-'''
+```
+```
+Y si tienes python instalado solo tienes que poner:
 python.exe Downloader.py
-'''
+```
 
 Si no tienes python instalado debes descargarlo desde https://www.python.org/downloads/
 
@@ -48,31 +52,34 @@ This downloads the .mp3 file only, then I'll add the option to choose which form
 
 # How to use.
 
+If you are in windows, you should run the install.bat file, since this will copy the FFmpeg folder to C:/ so that the program can use it correctly.
+
 To use it you must open a cmd.
-'''
+```
 Win + R '> cmd > Run
-'''
+```
 Then you go to the folder where you downloaded the file.
 EX: cd desktop/YouTube-Dowloader
-'''
+```
 CD
-'''
+```
+```
 Then you install the packages required to run the file:
-'''
+```
 pip install youtube-dl
-'''
-'''
+```
+```
 pip install tkinter
-'''
-'''
+```
+```
 pip install youtube-search-python
-'''
-'''
+```
+```
 pip install youtube-dl
-'''
+```
+```
 And if you have python installed you just have to put
-'''
 python.exe Downloader.py
-'''
+```
 
 If you do not have python installed you must download it from https://www.python.org/downloads/

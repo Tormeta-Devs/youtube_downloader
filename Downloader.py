@@ -14,7 +14,7 @@ def select_directory():
 
 def search_youtube():
     search_query = entry.get()
-    allSearch = Search(search_query, limit=5)
+    allSearch = Search(search_query, limit=10)
     results = allSearch.result()['result']
     result_listbox.delete(0, tk.END)
     video_ids.clear()  # Vaciar la lista de IDs de videos
@@ -27,7 +27,7 @@ def download_audio():
     if selected_index:
         selected_id = video_ids[selected_index[0]]
         video_url = f"https://www.youtube.com/watch?v={selected_id}"
-        download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s --extract-audio --audio-format mp3 {video_url}"
+        download_command = f"youtube-dl --ffmpeg-location C:\FFmpeg -o {output_directory}%(title)s.%(ext)s --extract-audio --audio-format mp3 {video_url}"
         subprocess.Popen(download_command, shell=True)
 
 def play_video():
@@ -40,7 +40,7 @@ def play_video():
 window = tk.Tk()
 window.title("Descargar audio de YouTube")
 
-# Ajustar el tamaño de la ventana
+# Ajustar el tamaï¿½o de la ventana
 window_width = 600
 window_height = 300
 window.geometry(f"{window_width}x{window_height}")
