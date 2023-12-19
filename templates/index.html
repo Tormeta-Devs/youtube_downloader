@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Downloader</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <input id="search_query" type="text" placeholder="Search on YouTube">
+    <button onclick="searchYouTube()">Search</button>
+    <ul id="result_list"></ul>
+    <button onclick="downloadAudio()">Download Audio</button>
+    <button onclick="playVideo()">Play Video</button>
+
+    <script>
+        function searchYouTube() {
+            var searchQuery = $('#search_query').val();
+            $.post('/search_youtube', { search_query: searchQuery }, function(data) {
+                $('#result_list').empty();
+                $.each(data, function(index, value) {
+                    $('#result_list').append('<li>' + value + '</li>');
+                });
+            });
+        }
+
+        function downloadAudio() {
+            var videoUrl = getSelectedVideoUrl();
+            $.post('/download_audio', { video_url: videoUrl }, function(data) {
+                alert('Audio Downloaded Successfully!');
+            });
+        }
+
+        function playVideo() {
+            var videoUrl = getSelectedVideoUrl();
+            $.post('/play_video', { video_url: videoUrl });
+        }
+
+        function getSelectedVideoUrl() {
+            return $('#result_list li:selected').text().split('. ')[1];
+        }
+    </script>
+</body>
+</html>
