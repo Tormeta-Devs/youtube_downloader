@@ -1,7 +1,7 @@
-from flask import Flask, render_template, request, jsonify
+import os
 import subprocess
-import webbrowser
-from youtubesearchpython import Search
+import tempfile
+from flask import Flask, render_template, request, send_file
 
 app = Flask(__name__)
 
@@ -9,26 +9,21 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
-@app.route('/search_youtube', methods=['POST'])
+@app.route('/search', methods=['POST'])
 def search_youtube():
     search_query = request.form['search_query']
-    allSearch = Search(search_query, limit=10)
-    results = allSearch.result()['result']
-    video_list = [f"{i}. {result['title']}" for i, result in enumerate(results, start=1)]
-    return jsonify(video_list)
+    # Tu lógica de búsqueda aquí...
+    return render_template('index.html', results=results)
 
-@app.route('/download_audio', methods=['POST'])
-def download_audio():
-    video_url = request.form['video_url']
-    download_command = f"youtube-dl --extract-audio --audio-format mp3 {video_url}"
-    subprocess.Popen(download_command, shell=True)
-    return jsonify({'status': 'success'})
+@app.route('/download/<video_id>', methods=['GET'])
+def download_audio(video_id):
+    video_url = f"https://www.youtube.com/watch?v={video_id}"
+    temp_file = tempfile.NamedTemporaryFile(suffix='.mp3', delete=False)
 
-@app.route('/play_video', methods=['POST'])
-def play_video():
-    video_url = request.form['video_url']
-    webbrowser.open(video_url)
-    return jsonify({'status': 'success'})
+    download_command = f"youtube-dl --ffmpeg-location C://FFmpeg//bin -o {temp_file.name} --extract-audio --audio-format mp3 {video_url}"
+    subprocess.run(download_command, shell=True)
+
+    return send_file(temp_file.name, as_attachment=True, download_name='audio.mp3')
 
 if __name__ == '__main__':
     app.run(debug=True)

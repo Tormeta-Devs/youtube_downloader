@@ -3,42 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Downloader</title>
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Descargar audio de YouTube</title>
 </head>
 <body>
-    <input id="search_query" type="text" placeholder="Search on YouTube">
-    <button onclick="searchYouTube()">Search</button>
-    <ul id="result_list"></ul>
-    <button onclick="downloadAudio()">Download Audio</button>
-    <button onclick="playVideo()">Play Video</button>
-
-    <script>
-        function searchYouTube() {
-            var searchQuery = $('#search_query').val();
-            $.post('/search_youtube', { search_query: searchQuery }, function(data) {
-                $('#result_list').empty();
-                $.each(data, function(index, value) {
-                    $('#result_list').append('<li>' + value + '</li>');
-                });
-            });
-        }
-
-        function downloadAudio() {
-            var videoUrl = getSelectedVideoUrl();
-            $.post('/download_audio', { video_url: videoUrl }, function(data) {
-                alert('Audio Downloaded Successfully!');
-            });
-        }
-
-        function playVideo() {
-            var videoUrl = getSelectedVideoUrl();
-            $.post('/play_video', { video_url: videoUrl });
-        }
-
-        function getSelectedVideoUrl() {
-            return $('#result_list li:selected').text().split('. ')[1];
-        }
-    </script>
+    <div class="container">
+        <h1>Descargar audio de YouTube</h1>
+        <form action="{{ url_for('search_youtube') }}" method="post">
+            <input type="text" name="search_query" placeholder="Buscar en YouTube" required>
+            <button type="submit">Buscar</button>
+        </form>
+        {% if results %}
+            <ul>
+                {% for result in results %}
+                    <li>
+                        {{ result['title'] }}
+                        <a href="{{ url_for('download_audio', video_id=result['id']) }}" download>Descargar audio</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
 </body>
 </html>
