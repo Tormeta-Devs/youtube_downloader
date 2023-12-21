@@ -31,19 +31,7 @@ Luego instalas los paquetes requeridos para ejecutar el archivo:
 
 
 ```
-pip install youtube-dl
-```
-
-```
-pip install tkinter
-```
-
-```
-pip install youtube-search-python
-```
-
-```
-pip install youtube-dl
+pip install -r requeriments.txt
 ```
 
 Y si tienes python instalado solo tienes que poner:
@@ -81,19 +69,7 @@ CD
 Then you install the packages required to run the file:
 
 ```
-pip install youtube-dl
-```
-
-```
-pip install tkinter
-```
-
-```
-pip install youtube-search-python
-```
-
-```
-pip install youtube-dl
+pip install -r requeriments.txt
 ```
 
 And if you have python installed you just have to put

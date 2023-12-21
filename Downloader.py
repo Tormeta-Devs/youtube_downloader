@@ -27,7 +27,8 @@ def download_audio():
     if selected_index:
         selected_id = video_ids[selected_index[0]]
         video_url = f"https://www.youtube.com/watch?v={selected_id}"
-        download_command = f"youtube-dl --ffmpeg-location C://FFmpeg//bin -o {output_directory}%(title)s.%(ext)s --extract-audio --audio-format mp3 {video_url}"
+        ffmpeg_path = "FFmpeg/bin"  # Carpeta FFmpeg en el mismo directorio que el archivo
+        download_command = f"youtube-dl --ffmpeg-location {ffmpeg_path} -o {output_directory}%(title)s.%(ext)s --extract-audio --audio-format mp3 {video_url}"
         subprocess.Popen(download_command, shell=True)
 
 def play_video():
