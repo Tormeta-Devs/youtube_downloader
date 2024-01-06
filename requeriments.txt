@@ -1,3 +1,0 @@
-tkinter
-youtube-search-python
-youtube-dl
