@@ -87,10 +87,9 @@ class YouTubeDownloaderApp(App):
         search_query = self.entry.text
         all_search = Search(search_query, limit=10)
         results = all_search.result()['result']
-        self.result_listbox.data = []
-
-        for i, result in enumerate(results, start=1):
-            self.result_listbox.data.append({'text': f"{i}. {result['title']}", 'selectable': True})
+        
+        data = [{'text': f"{i}. {result['title']}", 'selectable': True} for i, result in enumerate(results, start=1)]
+        self.result_listbox.data = data
 
     def download_audio(self, instance):
         if self.output_directory:
