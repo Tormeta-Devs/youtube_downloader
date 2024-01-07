@@ -3,7 +3,7 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
-from kivy.uix.listview import ListView
+from kivy.uix.recycleview import RecycleView
 from youtubesearchpython import Search
 import subprocess
 import webbrowser
@@ -21,7 +21,7 @@ class YouTubeDownloaderApp(App):
         search_button = Button(text='Buscar en YouTube', on_press=self.search_youtube)
         layout.add_widget(search_button)
 
-        self.result_listbox = ListView(size_hint=(None, None), size=(400, 200))
+        self.result_listbox = RecycleView(size_hint=(None, None), size=(400, 200))
         layout.add_widget(self.result_listbox)
 
         button_layout = BoxLayout(spacing=10)
@@ -49,18 +49,15 @@ class YouTubeDownloaderApp(App):
         search_query = self.entry.text
         all_search = Search(search_query, limit=10)
         results = all_search.result()['result']
-        self.result_listbox.adapter.data.clear()
-        self.video_ids.clear()
+        self.result_listbox.data = []
 
         for i, result in enumerate(results, start=1):
-            self.result_listbox.adapter.data.append(f"{i}. {result['title']}")
+            self.result_listbox.data.append({'text': f"{i}. {result['title']}"})
             self.video_ids.append(result['id'])
-
-        self.result_listbox._trigger_reset_populate()
 
     def download_audio(self, instance):
         if self.output_directory:
-            selected_index = self.result_listbox.adapter.selection
+            selected_index = self.result_listbox.selected_nodes
             if selected_index:
                 selected_id = self.video_ids[selected_index[0]]
                 video_url = f"https://www.youtube.com/watch?v={selected_id}"
@@ -69,7 +66,7 @@ class YouTubeDownloaderApp(App):
                 subprocess.Popen(download_command, shell=True)
 
     def play_video(self, instance):
-        selected_index = self.result_listbox.adapter.selection
+        selected_index = self.result_listbox.selected_nodes
         if selected_index:
             selected_id = self.video_ids[selected_index[0]]
             video_url = f"https://www.youtube.com/watch?v={selected_id}"
