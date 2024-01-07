@@ -4,6 +4,8 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.recycleview import RecycleView
+from kivy.uix.filechooser import FileChooserListView
+from kivy.uix.popup import Popup
 from youtubesearchpython import Search
 import subprocess
 import webbrowser
@@ -43,7 +45,15 @@ class YouTubeDownloaderApp(App):
         return layout
 
     def select_directory(self, instance):
-        self.output_directory = '/'.join(self.open_dir('Seleccionar directorio'))
+        file_chooser = FileChooserListView()
+        file_chooser.bind(on_submit=self.on_directory_selected)
+        popup = Popup(title='Seleccionar directorio', content=file_chooser, size_hint=(0.9, 0.9))
+        popup.open()
+
+    def on_directory_selected(self, instance, selection, touch):
+        if selection:
+            self.output_directory = selection[0]
+            self.directory_label.text = f'Directorio de salida: {self.output_directory}'
 
     def search_youtube(self, instance):
         search_query = self.entry.text
