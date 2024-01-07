@@ -4,18 +4,19 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.recycleview import RecycleView
-from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
-from kivy.uix.recycleview.views import RecycleDataAdapter
+from kivy.uix.popup import Popup
+from kivy.uix.filechooser import FileChooserListView
+from kivy.properties import BooleanProperty
+
 from youtubesearchpython import Search
 import subprocess
 import webbrowser
-from kivy.uix.popup import Popup
-from kivy.uix.filechooser import FileChooserListView
 
 class SelectableRecycleBoxLayout(LayoutSelectionBehavior, RecycleBoxLayout):
-    """ Adds selection and focus behaviour to the view. """
+    """ Adds selection and focus behavior to the view. """
     pass
 
 class SelectableLabel(RecycleDataViewBehavior, Label):

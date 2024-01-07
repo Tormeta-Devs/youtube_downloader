@@ -5,7 +5,7 @@ block_cipher = None
 
 
 a = Analysis(
-    ['code.py'],
+    ['downloader.py'],
     pathex=[],
     binaries=[],
     datas=[('FFmpeg', 'FFmpeg')],
@@ -28,7 +28,7 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name='code',
+    name='downloader',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
