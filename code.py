@@ -4,11 +4,38 @@ from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.recycleview import RecycleView
-from kivy.uix.filechooser import FileChooserListView
-from kivy.uix.popup import Popup
+from kivy.uix.recycleview.views import RecycleDataViewBehavior
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.recycleview.layout import LayoutSelectionBehavior
+from kivy.uix.recycleview.views import RecycleDataAdapter
 from youtubesearchpython import Search
 import subprocess
 import webbrowser
+from kivy.uix.popup import Popup
+from kivy.uix.filechooser import FileChooserListView
+
+class SelectableRecycleBoxLayout(LayoutSelectionBehavior, RecycleBoxLayout):
+    """ Adds selection and focus behaviour to the view. """
+    pass
+
+class SelectableLabel(RecycleDataViewBehavior, Label):
+    """ Add selection support to the Label """
+    index = None
+    selected = BooleanProperty(False)
+    selectable = BooleanProperty(True)
+
+    def refresh_view_attrs(self, rv, index, data):
+        """ Catch and handle the view changes """
+        self.index = index
+        return super(SelectableLabel, self).refresh_view_attrs(
+            rv, index, data)
+
+    def on_touch_down(self, touch):
+        """ Add selection on touch down """
+        if super(SelectableLabel, self).on_touch_down(touch):
+            return True
+        if self.collide_point(*touch.pos) and self.selectable:
+            return self.parent.select_with_touch(self.index, touch)
 
 class YouTubeDownloaderApp(App):
     def build(self):
@@ -17,24 +44,24 @@ class YouTubeDownloaderApp(App):
 
         layout = BoxLayout(orientation='vertical', spacing=10, padding=(10, 10))
 
-        self.entry = TextInput(hint_text='Ingrese la búsqueda', multiline=False, size_hint_y=None, height=30)
+        self.entry = TextInput(hint_text='Ingrese la búsqueda', multiline=False, size_hint_y=None, height=50)
         layout.add_widget(self.entry)
 
-        search_button = Button(text='Buscar en YouTube', on_press=self.search_youtube)
+        search_button = Button(text='Buscar en YouTube', on_press=self.search_youtube, size_hint_y=None, height=50)
         layout.add_widget(search_button)
 
-        self.result_listbox = RecycleView(size_hint=(None, None), size=(400, 200))
+        self.result_listbox = RecycleView(size_hint=(1, 1))
         layout.add_widget(self.result_listbox)
 
-        button_layout = BoxLayout(spacing=10)
+        button_layout = BoxLayout(spacing=10, size_hint_y=None, height=50)
 
-        directory_button = Button(text='Seleccionar directorio', on_press=self.select_directory)
+        directory_button = Button(text='Seleccionar directorio', on_press=self.select_directory, size_hint=(0.3, 1))
         button_layout.add_widget(directory_button)
 
-        download_button = Button(text='Descargar', on_press=self.download_audio)
+        download_button = Button(text='Descargar', on_press=self.download_audio, size_hint=(0.3, 1))
         button_layout.add_widget(download_button)
 
-        play_button = Button(text='Escuchar', on_press=self.play_video)
+        play_button = Button(text='Escuchar', on_press=self.play_video, size_hint=(0.3, 1))
         button_layout.add_widget(play_button)
 
         layout.add_widget(button_layout)
@@ -62,12 +89,11 @@ class YouTubeDownloaderApp(App):
         self.result_listbox.data = []
 
         for i, result in enumerate(results, start=1):
-            self.result_listbox.data.append({'text': f"{i}. {result['title']}"})
-            self.video_ids.append(result['id'])
+            self.result_listbox.data.append({'text': f"{i}. {result['title']}", 'selectable': True})
 
     def download_audio(self, instance):
         if self.output_directory:
-            selected_index = self.result_listbox.selected_nodes
+            selected_index = self.result_listbox.layout_manager.selected_nodes
             if selected_index:
                 selected_id = self.video_ids[selected_index[0]]
                 video_url = f"https://www.youtube.com/watch?v={selected_id}"
@@ -76,7 +102,7 @@ class YouTubeDownloaderApp(App):
                 subprocess.Popen(download_command, shell=True)
 
     def play_video(self, instance):
-        selected_index = self.result_listbox.selected_nodes
+        selected_index = self.result_listbox.layout_manager.selected_nodes
         if selected_index:
             selected_id = self.video_ids[selected_index[0]]
             video_url = f"https://www.youtube.com/watch?v={selected_id}"
