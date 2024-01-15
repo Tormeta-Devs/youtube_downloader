@@ -6,12 +6,13 @@ from tkinter import filedialog
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.textinput import TextInput
-from kivy.uix.button import Button
+from kivy.uix.button import ButtonBehavior
+from kivy.uix.image import Image
 from kivy.uix.label import Label
-from kivy.uix.image import AsyncImage
 from kivy.uix.scrollview import ScrollView
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.dropdown import DropDown
+from kivy.uix.button import Button
 
 # Importar buscar_youtube desde extras.search
 from extras.search import buscar_youtube
@@ -19,29 +20,35 @@ from extras.search import buscar_youtube
 # Importar DropDown desde kivy
 from kivy.uix.dropdown import DropDown
 
-class MyApp(App):
+# Clase para un botón con imagen
+class ImageButton(ButtonBehavior, Image):
+    pass
+
+class youtube_downloader(App):
     def build(self):
-        layout = BoxLayout(orientation='vertical')
+        self.title = "YouTube-Downloader" 
+        self.icon = "extras\main.ico"
+        layout = BoxLayout(orientation='vertical', spacing=10, padding=10)
 
         # Casilla de entrada de texto
         self.text_input = TextInput(multiline=False)
         layout.add_widget(self.text_input)
 
         # Botón de búsqueda
-        self.btn_buscar = Button(text="Buscar en YouTube")
+        self.btn_buscar = Button(text="Buscar en YouTube", size_hint_y=None, height=40)
         self.btn_buscar.bind(on_press=self.buscar_en_youtube)
         layout.add_widget(self.btn_buscar)
 
         # Botón para elegir directorio de descarga
-        btn_elegir_directorio = Button(text="Elegir Directorio", on_press=self.elegir_directorio)
+        btn_elegir_directorio = Button(text="Elegir Directorio", size_hint_y=None, height=40, on_press=self.elegir_directorio)
         layout.add_widget(btn_elegir_directorio)
 
         # Botón de Descargar
-        btn_descargar = Button(text="Descargar", on_press=self.descargar_video)
+        btn_descargar = Button(text="Descargar", size_hint_y=None, height=40, on_press=self.descargar_video)
         layout.add_widget(btn_descargar)
 
         # Botón para acceder al historial
-        btn_historial = Button(text="H", on_press=self.mostrar_historial)
+        btn_historial = Button(text="Historial", size_hint_y=None, height=40, on_press=self.mostrar_historial)
         layout.add_widget(btn_historial)
 
         # Resultados de la búsqueda
@@ -85,16 +92,16 @@ class MyApp(App):
             # Mostrar los nuevos resultados
             for video in resultados['videos']:
                 # Crear widgets para cada resultado
-                thumbnail = AsyncImage(source=video['thumbnails'][0], size=(100, 100))
+                thumbnail = ImageButton(source=video['thumbnails'][0], size=(100, 100), size_hint=(None, None))
                 title_label = Label(text=video['title'])
                 channel_label = Label(text=f"Canal: {video['channel']}")
                 duration_label = Label(text=f"Duracion: {video['duration']}")
 
                 # Botón de Descargar
-                btn_descargar = Button(text="Descargar", on_press=self.descargar_video)
+                btn_descargar = Button(text="Descargar", size_hint_y=None, height=30, on_press=self.descargar_video)
 
                 # Casilla de opciones para el formato
-                opciones_formato = TextInput(multiline=False, hint_text="Formato: mp4")
+                opciones_formato = TextInput(multiline=False, hint_text="Formato: mp4", size_hint_y=None, height=30)
 
                 # Añadir todo al diseño
                 self.resultados_inner_layout.add_widget(thumbnail)
@@ -105,34 +112,8 @@ class MyApp(App):
                 self.resultados_inner_layout.add_widget(opciones_formato)
 
     def mostrar_historial(self, instance):
-        # Desactivar el botón de búsqueda
-        self.btn_buscar_disabled = True
-        self.btn_buscar.background_color = [0.5, 0.5, 0.5, 1]  # Cambiar color de fondo a gris
-
-        # Mostrar la lista desplegable del historial
-        self.dropdown_historial.open(instance)
-
-    def cargar_y_mostrar_historial(self):
-        # Obtener la lista de archivos de historial
-        historial_path = "extras/history"
-        historial_archivos = os.listdir(historial_path)
-
-        # Ordenar archivos por fecha de creación (modificación)
-        historial_archivos.sort(key=lambda x: os.path.getmtime(os.path.join(historial_path, x)), reverse=True)
-
-        # Mostrar los archivos en la lista desplegable del historial
-        for archivo in historial_archivos:
-            btn_historial = Button(text=archivo, size_hint_y=None, height=30)
-            btn_historial.bind(on_release=self.seleccionar_historial)
-            self.dropdown_historial.add_widget(btn_historial)
-
-    def seleccionar_historial(self, instance):
-        # Cerrar la lista desplegable
-        self.dropdown_historial.dismiss()
-
-        # Desactivar el botón de búsqueda
-        self.btn_buscar_disabled = True
-        self.btn_buscar.background_color = [0.5, 0.5, 0.5, 1]  # Cambiar color de fondo a gris
+        # Limpiar resultados anteriores
+        self.resultados_inner_layout.clear_widgets()
 
         # Cargar el contenido del archivo de historial y mostrar los resultados
         archivo_path = os.path.join("extras/history", instance.text)
@@ -145,16 +126,16 @@ class MyApp(App):
             # Mostrar los nuevos resultados
             for video in resultados['videos']:
                 # Crear widgets para cada resultado
-                thumbnail = AsyncImage(source=video['thumbnails'][0], size=(100, 100))
+                thumbnail = ImageButton(source=video['thumbnails'][0], size=(100, 100), size_hint=(None, None))
                 title_label = Label(text=video['title'])
                 channel_label = Label(text=f"Canal: {video['channel']}")
                 duration_label = Label(text=f"Duracion: {video['duration']}")
 
                 # Botón de Descargar
-                btn_descargar = Button(text="Descargar", on_press=self.descargar_video)
+                btn_descargar = Button(text="Descargar", size_hint_y=None, height=30, on_press=self.descargar_video)
 
                 # Casilla de opciones para el formato
-                opciones_formato = TextInput(multiline=False, hint_text="Formato: mp4")
+                opciones_formato = TextInput(multiline=False, hint_text="Formato: mp4", size_hint_y=None, height=30)
 
                 # Añadir todo al diseño
                 self.resultados_inner_layout.add_widget(thumbnail)
@@ -201,7 +182,7 @@ class MyApp(App):
         output_directory = getattr(self, 'directorio_descarga', "downloads/")
 
         # Comando de descarga
-        download_command = f"python down.py {id_video} {formato_elegido} {output_directory}"
+        download_command = f"python extras/down.py {id_video} {formato_elegido} {output_directory}"
 
         try:
             # Ejecutar el comando de descarga en un proceso separado
@@ -211,4 +192,4 @@ class MyApp(App):
             print(f"Error en la descarga: {e}")
 
 if __name__ == '__main__':
-    MyApp().run()
+    youtube_downloader().run()
