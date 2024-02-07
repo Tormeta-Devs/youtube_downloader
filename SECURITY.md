@@ -1,24 +1,46 @@
-# Security Policy
+## Spanish:
+# Politica de Seguridad.
 
-## Supported Versions
+No nos hacemos responsables de cualquier problema, ya que no somos
+los creadores de las librerias, nostros armamos el codigo. Proximamente
+añadire en el codigo la posibilidad de analizar el archivo antes de descargarlo.
+De igual manera recomendamos siempre tener un antivirus. NO SIGNIFICA QUE ESTO TENGA VIRUS.
 
-Use this section to tell people about which versions of your project are
-currently being supported with security updates.
+
+# Versiones que soportan el analisis de Virus total:
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 5.1.x   | :white_check_mark: |
-| 5.0.x   | :x:                |
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+| 2.1 | :x: |
+| 2.0 | :x: |
+| 0.0.9 |:x:|
 
-## Reporting a Vulnerability
+## Reportar una vulnerabilidad
 
-Use this section to tell people how to report a vulnerability.
-
-Tell them where to go, how often they can expect to get an update on a
-reported vulnerability, what to expect if the vulnerability is accepted or
-declined, etc.
+SI DE ALGUNA MANERA ENCUENTRAS ALGO EXTRANO NO DUDES EN CREAR UN ISSUE.
+Si encuentras algo sospechoso en tu sistema despues de descargar un archivo, crea un ISSUE.
+**Por el momento estamos desarrolando el analisis de Virus Total.**
 
 
-[THIS IS NOT REAL]
+## English:
+# Security policy.
+
+We are not responsible for any problem as we are not
+The creators of the libraries, we put together the code. Soon
+I will add to the code the possibility of analyzing the file before downloading it.
+Likewise, we always recommend having an antivirus. IT DOES NOT MEAN THIS HAS A VIRUS.
+
+
+# Versions that support total virus analysis:
+
+| Version | Supported |
+| ------- | ------------------ |
+| 2.1 | :x: |
+| 2.0 | :x: |
+| 0.0.9 |:x:|
+
+## Report a vulnerability
+
+IF IN ANY WAY YOU FIND SOMETHING STRANGE, DON'T HESITATE TO CREATE AN ISSUE.
+If you find something suspicious on your system after downloading a file, create an ISSUE.
+**At the moment we are developing the Total Virus analysis.**
