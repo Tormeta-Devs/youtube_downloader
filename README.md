@@ -17,16 +17,15 @@ Pues aquí venimos a simplificar el proceso, nuestro código es mucho más simpl
 - Se elige el formato, entre ellos existe: "webm", "aac", "flac", "mp3", "m4a", "opus", "vorbis" y "wav".
 - Y es tan simple como darle al botón de descargar y esperar.
 
-# Como utilizarlo.
+# Que realiza el codigo?
 
-- Primero descarga nuestra release, el ultimo es el mejor y el más completo.
-- Abre el ejecutable llamado `installer.bat`
-- Esto debería de haber instalado Python, si de lo contrario no lo tienes instalado, también debería haber comprobado la existencia de FFmpeg, si no lo encuentra, lo instala. De igual manera, también instala las librerías necesarias para el funcionamiento del código.
-- Para comenzar a usarlo, necesitamos abrir una ventana del cmd.
-- Escribe en ella los siguientes comandos: ` python.exe youtube_downloader.py `
-- Si todo va bien, se debería de abrir la ventana del programa, de lo contrario comprueba que el cmd se encuentre en la ruta del programa, de lo contrario viaja hasta el con ` cd (ruta a la carpeta) `
-- Comienza con colocar el nombre de una canción o de un video para descargar y búscalo.
-- Ten cuidado con tocar muchas veces el programa, porque puede crashear, el tiempo de espera depende de cada computadora y del Internet disponible.
+- Realiza una búsqueda en YouTube de videos según el titulo ingresado.
+- Una vez seleccionado el video con el título correspondiente puedes escucharlo.
+- Si deseas ir directamente a la descarga selecciona el formato que te parezca mejor, iremos incluyendo formatos a lo largo del tiempo.
+- La descarga tarda dependiendo el sistema y el Internet disponible, se puede visualizar en la consola el correspondiente trabajo de descarga.
+- Al iniciar el código se debería descargar el FFmpeg, por lo tanto, si es tu primera vez utilizando el programa puede tardar un tiempo en responder.
+- Recuerda elegir un directorio antes de darle a descargar, comprueba donde se van a guardar debajo del programa.
+
 
 
 ----------------------------------------------------------
@@ -47,15 +46,13 @@ Well, here we come to simplify the process, our code is much simpler than using 
 - The format is chosen, among them there are: "webm", "aac", "flac", "mp3", "m4a", "opus", "vorbis" and "wav".
 - And it's as simple as hitting the download button and waiting.
 
-# How to use.
+# What does the code do?
 
-- First download our release, the last one is the best and most complete.
-- Open the executable called `installer.bat`
-- This should have installed Python, if otherwise you don't have it installed, it should also have checked for FFmpeg, if it doesn't find it, install it. Likewise, it also installs the libraries necessary for the code to function.
-- To start using it, we need to open a cmd window.
-- Write the following commands in it: ` python.exe youtube_downloader.py `
-- If everything goes well, the program window should open, otherwise check that the cmd is in the program path, otherwise it travels to the with ` cd (path to the folder) `
-- Start by entering the name of a song or video to download and search for it.
-- Be careful not to touch the program too many times, because it may crash, the waiting time depends on each computer and the available Internet.
+- Search YouTube for videos based on the title entered.
+- Once the video with the corresponding title is selected you can listen to it.
+- If you want to go directly to the download, select the format that seems best to you, we will include formats over time.
+- The download takes time depending on the system and the available Internet, the corresponding download job can be displayed on the console.
+- When you start the code the FFmpeg should be downloaded, therefore, if it is your first time using the program it may take a while to respond.
+- Remember to choose a directory before downloading, check where they will be saved under the program.
 
 ----------------------------------------------------------

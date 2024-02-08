@@ -1,38 +1,15 @@
-# -*- coding: utf-8 -*-
-"""
-Este script realiza la descarga de audio o video desde YouTube.
-
-Copyright (c) 2024 Juan Mellano (Fundador de Tormenta-Devs)
-
-Se concede permiso, de forma gratuita, a cualquier persona que obtenga una copia
-de este software y los archivos de documentación asociados (el "Software"), para
-tratar el Software sin restricciones, incluyendo, sin limitación, los derechos
-para usar, copiar, modificar, fusionar, publicar, distribuir, sublicenciar y/o vender
-copias del Software, y para permitir a las personas a las que se les proporcione el
-Software a hacerlo, con sujeción a las siguientes condiciones:
-
-El aviso de copyright anterior y este aviso de permiso se incluirán en todas las copias
-o porciones sustanciales del Software.
-
-EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA,
-INCLUYENDO PERO NO LIMITADO A LAS GARANTÍAS DE COMERCIABILIDAD, IDONEIDAD PARA UN PROPÓSITO
-PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES O TITULARES DE LOS DERECHOS DE AUTOR
-SERÁN RESPONSABLES DE NINGÚN RECLAMO, DAÑO U OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE
-CONTRATO, AGRAVIO O DE OTRO MODO, DERIVADO DE, FUERA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO
-U OTROS TRATOS EN EL SOFTWARE.
-
-Las copias ilegales de este software no están disponibles. Si desea realizar
-personalizaciones, por favor, realice un fork del repositorio en GitHub:
-https://github.com/Tormeta-Devs/youtube_downloader
-"""
+import os
+import subprocess
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter.ttk import Combobox
 from youtubesearchpython import Search
-import subprocess
 import webbrowser
 import threading
-import os
+
+# Variables globales
+output_directory = ""
+download_counter = 0
 
 def select_directory():
     global output_directory
@@ -45,12 +22,13 @@ def search_youtube(*args):
     allSearch = Search(search_query, limit=10)
     results = allSearch.result()['result']
     result_listbox.delete(0, tk.END)
-    video_ids.clear()  # Vaciar la lista de IDs de videos
+    video_ids.clear()
     for i, result in enumerate(results, start=1):
         result_listbox.insert(tk.END, f"{i}. {result['title']}")
         video_ids.append(result['id'])
 
 def download_audio_or_video():
+    global download_counter
     if not output_directory:
         messagebox.showerror("Error", "Antes de descargar, selecciona un directorio")
         return
@@ -59,12 +37,11 @@ def download_audio_or_video():
         selected_id = video_ids[selected_index[0]]
         video_url = f"https://www.youtube.com/watch?v={selected_id}"
         selected_format = format_combobox.get()
-        if selected_format == "webm":
-            download_command = f"youtube-dl -o \"{output_directory}/%(title)s.%(ext)s\" -f bestvideo {video_url}"
-        else:
-            download_command = f"youtube-dl -o \"{output_directory}/%(title)s.%(ext)s\" -x --audio-format {selected_format} {video_url}"
+        download_command = f"youtube-dl -o \"{output_directory}/%(title)s.%(ext)s\" -x --audio-format {selected_format} {video_url}" if selected_format != "webm" else f"youtube-dl -o \"{output_directory}/%(title)s.%(ext)s\" -f bestvideo {video_url}"
         disable_ui()
         threading.Thread(target=perform_download, args=(download_command,)).start()
+        download_counter += 1
+        update_title()
 
 def perform_download(download_command):
     subprocess.Popen(download_command, shell=True).wait()
@@ -96,44 +73,132 @@ def enable_ui():
         widget.config(state=tk.NORMAL)
     window.config(cursor="")
 
-window = tk.Tk()
-window.title("Descargar audio o video de YouTube")
+def check_ffmpeg():
+    try:
+        subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+    except subprocess.CalledProcessError:
+        install_ffmpeg_with_winget()
 
-# Ajustar el tamaño de la ventana
-window_width = 500
-window_height = 300
-window.geometry(f"{window_width}x{window_height}")
+def install_ffmpeg_with_winget():
+    try:
+        subprocess.run(["winget", "install", "ffmpeg"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        messagebox.showinfo("Info", "FFmpeg se ha instalado correctamente.")
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Error", f"No se pudo instalar FFmpeg: {e.stderr}")
+
+def update_title():
+    window.title(f"YouTube-Downloader | FFmpeg: {get_ffmpeg_version()} | Descargas: {download_counter}")
+
+def get_ffmpeg_version():
+    try:
+        version_output = subprocess.check_output(["ffmpeg", "-version"]).decode("utf-8")
+        version_line = version_output.splitlines()[0]
+        version = version_line.split("version ")[1].split(" ")[0]
+        return version
+    except Exception as e:
+        print(f"Error al obtener la versión de FFmpeg: {e}")
+        return "Desconocida"
+
+# Verificar si FFmpeg está instalado
+check_ffmpeg()
+
+# Crear ventana
+window = tk.Tk()
+window.title("YouTube-Downloader")
+window.geometry("600x300")
 window.resizable(False, False)
 
+# Entrada de búsqueda
 entry = tk.Entry(window, width=40)
 entry.pack(pady=10)
 entry.bind("<Return>", on_enter_key_pressed)
 
+# Botón de búsqueda
 search_button = tk.Button(window, text="Buscar en YouTube", command=search_youtube)
 search_button.pack()
 
+# Lista de resultados
 result_listbox = tk.Listbox(window, width=50)
 result_listbox.pack(pady=10)
 
+# Frame para botones
 button_frame = tk.Frame(window)
 button_frame.pack()
 
+# Botón para seleccionar directorio
 directory_button = tk.Button(button_frame, text="Seleccionar directorio", command=select_directory)
-directory_button.grid(row=0, column=0)
+directory_button.pack(side=tk.LEFT)
 
+# Botón de descarga
 download_button = tk.Button(button_frame, text="Descargar", command=download_audio_or_video, state=tk.DISABLED)
-download_button.grid(row=0, column=1, padx=5)
+download_button.pack(side=tk.LEFT, padx=10)
 
-format_combobox = Combobox(button_frame, values=["mp3", "aac", "flac", "webm", "m4a", "opus", "vorbis", "wav"], state="readonly")
-format_combobox.current(0)  # Establecer el valor predeterminado
-format_combobox.grid(row=0, column=2, padx=5)
+# Selector de formatos
+format_combobox = Combobox(button_frame, values=["aac", "flac", "mp3", "m4a", "opus", "vorbis", "wav", "webm"], state="readonly")
+format_combobox.pack(side=tk.LEFT)
 
-play_button = tk.Button(button_frame, text="Escuchar", command=play_video)
-play_button.grid(row=0, column=3, padx=5)
+# Botón de reproducción
+play_button = tk.Button(button_frame, text="Reproducir", command=play_video)
+play_button.pack(side=tk.LEFT)
 
+# Etiqueta de directorio
 directory_label = tk.Label(window, text="Directorio de salida:")
 directory_label.pack()
 
+# Contador de descargas
+download_counter_label = tk.Label(window, text=f"Descargas: {download_counter}")
+download_counter_label.pack()
+
+# Funciones auxiliares
 video_ids = []
 
+def update_download_button_state():
+    if output_directory:
+        download_button.config(state=tk.NORMAL)
+    else:
+        download_button.config(state=tk.DISABLED)
+
+def update_title():
+    window.title(f"YouTube-Downloader | FFmpeg: {get_ffmpeg_version()} | Descargas: {download_counter}")
+
+def on_enter_key_pressed(event):
+    search_youtube()
+
+def disable_ui():
+    for widget in (entry, search_button, result_listbox, directory_button, format_combobox, play_button):
+        widget.config(state=tk.DISABLED)
+    window.config(cursor="wait")
+
+def enable_ui():
+    for widget in (entry, search_button, result_listbox, directory_button, format_combobox, play_button):
+        widget.config(state=tk.NORMAL)
+    window.config(cursor="")
+
+def check_ffmpeg():
+    try:
+        subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+    except subprocess.CalledProcessError:
+        install_ffmpeg_with_winget()
+
+def install_ffmpeg_with_winget():
+    try:
+        subprocess.run(["winget", "install", "ffmpeg"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+        messagebox.showinfo("Info", "FFmpeg se ha instalado correctamente.")
+    except subprocess.CalledProcessError as e:
+        messagebox.showerror("Error", f"No se pudo instalar FFmpeg: {e.stderr}")
+
+def get_ffmpeg_version():
+    try:
+        version_output = subprocess.check_output(["ffmpeg", "-version"]).decode("utf-8")
+        version_line = version_output.splitlines()[0]
+        version = version_line.split("version ")[1].split(" ")[0]
+        return version
+    except Exception as e:
+        print(f"Error al obtener la versión de FFmpeg: {e}")
+        return "Desconocida"
+
+# Verificar si FFmpeg está instalado
+check_ffmpeg()
+
+# Ejecutar ventana
 window.mainloop()
