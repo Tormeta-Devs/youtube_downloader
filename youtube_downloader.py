@@ -12,6 +12,8 @@ import os
 def select_directory():
     global output_directory
     output_directory = filedialog.askdirectory()
+    if output_directory:
+        output_directory = os.path.join(output_directory, "")  # Añadir el separador de directorios al final
     directory_label.config(text=output_directory)
     update_download_button_state()
 
@@ -26,33 +28,36 @@ def search_youtube(*args):
         video_ids.append(result['id'])
 
 def download_audio_or_video():
+    if not output_directory:
+        messagebox.showerror("Error", "Antes de descargar, selecciona un directorio")
+        return
     selected_index = result_listbox.curselection()
     if selected_index:
         selected_id = video_ids[selected_index[0]]
         video_url = f"https://www.youtube.com/watch?v={selected_id}"
         selected_format = format_combobox.get()
         if selected_format == "webm":
-            download_command = f"youtube-dl -o {output_directory}/%(title)s.%(ext)s -f bestvideo {video_url}"
+            download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -f bestvideo {video_url}"
         else:
-            download_command = f"youtube-dl -o {output_directory}/%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
+            download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
         subprocess.Popen(download_command, shell=True)
         check_for_malware()
 
 def check_for_malware():
-    if output_directory:
-        title = entry.get()
-        selected_format = format_combobox.get()
-        file_path = os.path.join(output_directory, f"{title}.{selected_format}")
-        if os.path.exists(file_path):
-            try:
-                cd = pyclamd.ClamdUnixSocket()
-                scan_result = cd.scan_file(file_path)
-                if scan_result[file_path] == "FOUND":
-                    messagebox.showwarning("Advertencia", "Se encontró malware. Avisa a Tormenta-Devs del problema e inicia un análisis de tu computadora lo antes posible.")
-            except pyclamd.ConnectionError:
-                messagebox.showerror("Error", "No se pudo conectar al demonio ClamAV")
-    else:
+    if not output_directory:
         messagebox.showerror("Error", "Antes de analizar, selecciona un directorio")
+        return
+    title = entry.get()
+    selected_format = format_combobox.get()
+    file_path = os.path.join(output_directory, f"{title}.{selected_format}")
+    if os.path.exists(file_path):
+        try:
+            cd = pyclamd.ClamdUnixSocket()
+            scan_result = cd.scan_file(file_path)
+            if scan_result[file_path] == "FOUND":
+                messagebox.showwarning("Advertencia", "Se encontró malware. Avisa a Tormenta-Devs del problema e inicia un análisis de tu computadora lo antes posible.")
+        except pyclamd.ConnectionError:
+            messagebox.showerror("Error", "No se pudo conectar al demonio ClamAV")
 
 def play_video():
     selected_index = result_listbox.curselection()
@@ -98,7 +103,7 @@ directory_button.grid(row=0, column=0)
 download_button = tk.Button(button_frame, text="Descargar", command=download_audio_or_video, state=tk.DISABLED)
 download_button.grid(row=0, column=1, padx=5)
 
-format_combobox = Combobox(button_frame, values=["webm", "aac", "flac", "mp3", "m4a", "opus", "vorbis", "wav"], state="readonly")
+format_combobox = Combobox(button_frame, values=["mp3", "aac", "flac", "webm", "m4a", "opus", "vorbis", "wav"], state="readonly")
 format_combobox.current(0)  # Establecer el valor predeterminado
 format_combobox.grid(row=0, column=2, padx=5)
 
