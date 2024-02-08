@@ -43,25 +43,27 @@ def download_audio_or_video():
             download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
         subprocess.Popen(download_command, shell=True)
         disable_ui()
-        check_for_malware_thread = threading.Thread(target=check_for_malware)
-        check_for_malware_thread.start()
+        check_for_file_thread = threading.Thread(target=check_for_file, args=(selected_format,))
+        check_for_file_thread.start()
 
-def check_for_malware():
-    if not output_directory:
-        messagebox.showerror("Error", "Antes de analizar, selecciona un directorio")
-        return
+def check_for_file(selected_format):
     title = entry.get()
-    selected_format = format_combobox.get()
     file_path = os.path.join(output_directory, f"{title}.{selected_format}")
     while not os.path.exists(file_path):
         continue
-    try:
-        cd = pyclamd.ClamdUnixSocket()
-        scan_result = cd.scan_file(file_path)
-        if scan_result[file_path] == "FOUND":
-            messagebox.showwarning("Advertencia", "Se encontró malware. Avisa a Tormenta-Devs del problema e inicia un análisis de tu computadora lo antes posible.")
-    except pyclamd.ConnectionError:
-        messagebox.showerror("Error", "No se pudo conectar al demonio ClamAV")
+    check_for_malware(selected_format)
+
+def check_for_malware(selected_format):
+    title = entry.get()
+    file_path = os.path.join(output_directory, f"{title}.{selected_format}")
+    if os.path.exists(file_path):
+        try:
+            cd = pyclamd.ClamdUnixSocket()
+            scan_result = cd.scan_file(file_path)
+            if scan_result[file_path] == "FOUND":
+                messagebox.showwarning("Advertencia", "Se encontró malware. Avisa a Tormenta-Devs del problema e inicia un análisis de tu computadora lo antes posible.")
+        except pyclamd.ConnectionError:
+            messagebox.showerror("Error", "No se pudo conectar al demonio ClamAV")
     enable_ui()
 
 def play_video():
