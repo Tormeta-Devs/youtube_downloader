@@ -30,12 +30,11 @@ def download_audio_or_video():
     if selected_index:
         selected_id = video_ids[selected_index[0]]
         video_url = f"https://www.youtube.com/watch?v={selected_id}"
-        ffmpeg_path = "FFmpeg/bin"  # Carpeta FFmpeg en el mismo directorio que el archivo
         selected_format = format_combobox.get()
         if selected_format == "webm":
-            download_command = f"youtube-dl --ffmpeg-location {ffmpeg_path} -o {output_directory}%(title)s.%(ext)s -f bestvideo {video_url}"
+            download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -f bestvideo {video_url}"
         else:
-            download_command = f"youtube-dl --ffmpeg-location {ffmpeg_path} -o {output_directory}%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
+            download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
         subprocess.Popen(download_command, shell=True)
         check_for_malware()
 
