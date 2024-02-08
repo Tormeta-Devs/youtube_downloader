@@ -5,77 +5,57 @@
 
 ## Español
 
-Estas arto de los anuncios al descargar músicas de YouTube, o de copiar el link, pegarlo en una pagina poco fiable, o hasta llenarte de virus, esta herramienta te facilita todo!. Solo colocas el titulo a buscar, y te realiza una búsqueda, eliges un directorio, y le das a descargar!
+> Hola, somos Tormenta-Devs, este es uno de nuestros proyectos más completos y útiles de usar.
 
-Los mensajes se encuentran en español, por razones que el autor es español y le es mas facil, proximamemente añadire idiomas, mientras solo se encuentra el español.
+# De que trata?
 
-Esto descarga el archivo .mp3 solamente, despues añadire la opcion de elegir en que formato descargarlo. RECUERDA ANTES DE DESCARGAR UNA CANCION, ELEGIR EL DIRECTORIO, DE LO CONTRARIO DARA UN ERROR. 
+Primero, ¿quién no ha pasado por los tediosos procesos de descarga de un video de YouTube?, ya sea como música o el mismo video como tal.
+Pues aquí venimos a simplificar el proceso, nuestro código es mucho más simple que utilizar paginas como la popular Y2mate que contenía virus.
+
+- Nuestro código es capaz de realizar una búsqueda de YouTube según el título que le propongas.
+- Una vez realizada la búsqueda, se selecciona el directorio a donde va a ir descargada la música.
+- Se elige el formato, entre ellos existe: "webm", "aac", "flac", "mp3", "m4a", "opus", "vorbis" y "wav".
+- Y es tan simple como darle al botón de descargar y esperar.
 
 # Como utilizarlo.
 
-Deberás ejecutar si te encuentras en windows el archivo instalar.bat, ya que esto copiara la carpeta FFmpeg a C:/ para que el programa lo utilize correctamente. 
-
-Para utilizarlo debes abrir un cmd. 
-```
-Win + R > cmd > Ejecutrar
-```
-
-Luego te dirijes a la carpeta donde ayas descargado el archivo.
-EJ: cd desktop/YouTube-Dowloader 
-
-```
-cd 
-```
-
-Luego instalas los paquetes requeridos para ejecutar el archivo:
+- Primero descarga nuestra release, el ultimo es el mejor y el más completo.
+- Abre el ejecutable llamado `installer.bat`
+- Esto debería de haber instalado Python, si de lo contrario no lo tienes instalado, también debería haber comprobado la existencia de FFmpeg, si no lo encuentra, lo instala. De igual manera, también instala las librerías necesarias para el funcionamiento del código.
+- Para comenzar a usarlo, necesitamos abrir una ventana del cmd.
+- Escribe en ella los siguientes comandos: ` python.exe YouTube downloader.py `
+- Si todo va bien, se debería de abrir la ventana del programa, de lo contrario comprueba que el cmd se encuentre en la ruta del programa, de lo contrario viaja hasta el con ` cd (ruta a la carpeta) `
+- Comienza con colocar el nombre de una canción o de un video para descargar y búscalo.
+- Ten cuidado con tocar muchas veces el programa, porque puede crashear, el tiempo de espera depende de cada computadora y del Internet disponible.
 
 
-```
-pip install -r requeriments.txt
-```
+----------------------------------------------------------
 
-Y si tienes python instalado solo tienes que poner:
-
-```
-python.exe Downloader.py
-```
-
-Si no tienes python instalado debes descargarlo desde https://www.python.org/downloads/
+### YouTube-Downloader
 
 ## English
- Are you sick of ads when downloading music from YouTube, or copying the link, pasting it on an unreliable page, or even getting infected with viruses, this tool makes everything easier for you! You just put the title to search, and it performs a search for you, you choose a directory, and you click download!
 
- The messages are in Spanish, for reasons that the author is Spanish and it is easier for him, soon I will add languages, while only Spanish is found.
+> Hello, we are Tormenta-Devs, this is one of our most complete and useful projects to use.
 
-This downloads the .mp3 file only, then I'll add the option to choose which format to download it in. REMEMBER BEFORE DOWNLOADING A SONG, CHOOSE THE DIRECTORY, OTHERWISE IT WILL GIVE AN ERROR.
+# What is it about?
+
+First, who hasn't gone through the tedious processes of downloading a YouTube video, either as music or the video itself.
+Well, here we come to simplify the process, our code is much simpler than using pages like the popular Y2mate that contained viruses.
+
+- Our code is capable of performing a YouTube search based on the title you propose.
+- Once the search is done, select the directory where the music will be downloaded.
+- The format is chosen, among them there are: "webm", "aac", "flac", "mp3", "m4a", "opus", "vorbis" and "wav".
+- And it's as simple as hitting the download button and waiting.
 
 # How to use.
 
-If you are in windows, you should run the install.bat file, since this will copy the FFmpeg folder to C:/ so that the program can use it correctly.
+- First download our release, the last one is the best and most complete.
+- Open the executable called `installer.bat`
+- This should have installed Python, if otherwise you don't have it installed, it should also have checked for FFmpeg, if it doesn't find it, install it. Likewise, it also installs the libraries necessary for the code to function.
+- To start using it, we need to open a cmd window.
+- Write the following commands in it: ` python.exe YouTube downloader.py `
+- If everything goes well, the program window should open, otherwise check that the cmd is in the program path, otherwise it travels to the with ` cd (path to the folder) `
+- Start by entering the name of a song or video to download and search for it.
+- Be careful not to touch the program too many times, because it may crash, the waiting time depends on each computer and the available Internet.
 
-To use it you must open a cmd.
-
-```
-Win + R '> cmd > Run
-```
-
-Then you go to the folder where you downloaded the file.
-EX: cd desktop/YouTube-Dowloader
-
-```
-CD
-```
-
-Then you install the packages required to run the file:
-
-```
-pip install -r requeriments.txt
-```
-
-And if you have python installed you just have to put
-
-```
-python.exe Downloader.py
-```
-
-If you do not have python installed you must download it from https://www.python.org/downloads/
+----------------------------------------------------------
