@@ -31,9 +31,9 @@ def download_audio_or_video():
         ffmpeg_path = "FFmpeg/bin"  # Carpeta FFmpeg en el mismo directorio que el archivo
         selected_format = format_combobox.get()
         if selected_format == "Mejor Archivo de Video":
-            download_command = f"youtube-dl --ffmpeg-location {ffmpeg_path} -o {output_directory}%(title)s.%(ext)s -f bestvideo {video_url}"
+            download_command = f"youtube-dl --ffmpeg-location {ffmpeg_path} -o {output_directory}/%(title)s.%(ext)s -f bestvideo {video_url}"
         else:
-            download_command = f"youtube-dl --ffmpeg-location {ffmpeg_path} -o {output_directory}/%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
+            download_command = f"youtube-dl --ffmpeg-location {ffmpeg_path} -o {output_directory}//%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
         subprocess.Popen(download_command, shell=True)
 
 def play_video():
