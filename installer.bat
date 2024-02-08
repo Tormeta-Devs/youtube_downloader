@@ -24,5 +24,6 @@ if %errorlevel% equ 0 (
     echo FFmpeg se ha instalado correctamente.
 )
 rem
+python.exe -m pip install --upgrade pip
 python.exe -m pip install -r requeriments.txt
 pause
