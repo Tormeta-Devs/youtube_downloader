@@ -5,6 +5,7 @@ from tkinter.ttk import Combobox
 from youtubesearchpython import Search
 import subprocess
 import webbrowser
+import threading
 
 import pyclamd
 import os
@@ -41,7 +42,9 @@ def download_audio_or_video():
         else:
             download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
         subprocess.Popen(download_command, shell=True)
-        check_for_malware()
+        disable_ui()
+        check_for_malware_thread = threading.Thread(target=check_for_malware)
+        check_for_malware_thread.start()
 
 def check_for_malware():
     if not output_directory:
@@ -50,14 +53,16 @@ def check_for_malware():
     title = entry.get()
     selected_format = format_combobox.get()
     file_path = os.path.join(output_directory, f"{title}.{selected_format}")
-    if os.path.exists(file_path):
-        try:
-            cd = pyclamd.ClamdUnixSocket()
-            scan_result = cd.scan_file(file_path)
-            if scan_result[file_path] == "FOUND":
-                messagebox.showwarning("Advertencia", "Se encontró malware. Avisa a Tormenta-Devs del problema e inicia un análisis de tu computadora lo antes posible.")
-        except pyclamd.ConnectionError:
-            messagebox.showerror("Error", "No se pudo conectar al demonio ClamAV")
+    while not os.path.exists(file_path):
+        continue
+    try:
+        cd = pyclamd.ClamdUnixSocket()
+        scan_result = cd.scan_file(file_path)
+        if scan_result[file_path] == "FOUND":
+            messagebox.showwarning("Advertencia", "Se encontró malware. Avisa a Tormenta-Devs del problema e inicia un análisis de tu computadora lo antes posible.")
+    except pyclamd.ConnectionError:
+        messagebox.showerror("Error", "No se pudo conectar al demonio ClamAV")
+    enable_ui()
 
 def play_video():
     selected_index = result_listbox.curselection()
@@ -74,6 +79,16 @@ def update_download_button_state():
 
 def on_enter_key_pressed(event):
     search_youtube()
+
+def disable_ui():
+    for widget in (entry, search_button, result_listbox, directory_button, format_combobox, play_button):
+        widget.config(state=tk.DISABLED)
+    window.config(cursor="wait")
+
+def enable_ui():
+    for widget in (entry, search_button, result_listbox, directory_button, format_combobox, play_button):
+        widget.config(state=tk.NORMAL)
+    window.config(cursor="")
 
 window = tk.Tk()
 window.title("Descargar audio o video de YouTube")
