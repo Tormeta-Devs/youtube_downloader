@@ -23,7 +23,7 @@ Pues aquí venimos a simplificar el proceso, nuestro código es mucho más simpl
 - Abre el ejecutable llamado `installer.bat`
 - Esto debería de haber instalado Python, si de lo contrario no lo tienes instalado, también debería haber comprobado la existencia de FFmpeg, si no lo encuentra, lo instala. De igual manera, también instala las librerías necesarias para el funcionamiento del código.
 - Para comenzar a usarlo, necesitamos abrir una ventana del cmd.
-- Escribe en ella los siguientes comandos: ` python.exe YouTube downloader.py `
+- Escribe en ella los siguientes comandos: ` python.exe youtube_downloader.py `
 - Si todo va bien, se debería de abrir la ventana del programa, de lo contrario comprueba que el cmd se encuentre en la ruta del programa, de lo contrario viaja hasta el con ` cd (ruta a la carpeta) `
 - Comienza con colocar el nombre de una canción o de un video para descargar y búscalo.
 - Ten cuidado con tocar muchas veces el programa, porque puede crashear, el tiempo de espera depende de cada computadora y del Internet disponible.
@@ -53,7 +53,7 @@ Well, here we come to simplify the process, our code is much simpler than using 
 - Open the executable called `installer.bat`
 - This should have installed Python, if otherwise you don't have it installed, it should also have checked for FFmpeg, if it doesn't find it, install it. Likewise, it also installs the libraries necessary for the code to function.
 - To start using it, we need to open a cmd window.
-- Write the following commands in it: ` python.exe YouTube downloader.py `
+- Write the following commands in it: ` python.exe youtube_downloader.py `
 - If everything goes well, the program window should open, otherwise check that the cmd is in the program path, otherwise it travels to the with ` cd (path to the folder) `
 - Start by entering the name of a song or video to download and search for it.
 - Be careful not to touch the program too many times, because it may crash, the waiting time depends on each computer and the available Internet.
