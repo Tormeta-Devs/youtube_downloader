@@ -1,4 +1,3 @@
-# -*- coding: cp1252 -*-
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter.ttk import Combobox
@@ -6,15 +5,11 @@ from youtubesearchpython import Search
 import subprocess
 import webbrowser
 import threading
-
-import pyclamd
 import os
 
 def select_directory():
     global output_directory
     output_directory = filedialog.askdirectory()
-    if output_directory:
-        output_directory = os.path.join(output_directory, "")  # Añadir el separador de directorios al final
     directory_label.config(text=output_directory)
     update_download_button_state()
 
@@ -38,32 +33,14 @@ def download_audio_or_video():
         video_url = f"https://www.youtube.com/watch?v={selected_id}"
         selected_format = format_combobox.get()
         if selected_format == "webm":
-            download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -f bestvideo {video_url}"
+            download_command = f"youtube-dl -o \"{output_directory}/%(title)s.%(ext)s\" -f bestvideo {video_url}"
         else:
-            download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
-        subprocess.Popen(download_command, shell=True)
+            download_command = f"youtube-dl -o \"{output_directory}/%(title)s.%(ext)s\" -x --audio-format {selected_format} {video_url}"
         disable_ui()
-        check_for_file_thread = threading.Thread(target=check_for_file, args=(selected_format,))
-        check_for_file_thread.start()
+        threading.Thread(target=perform_download, args=(download_command,)).start()
 
-def check_for_file(selected_format):
-    title = entry.get()
-    file_path = os.path.join(output_directory, f"{title}.{selected_format}")
-    while not os.path.exists(file_path):
-        continue
-    check_for_malware(selected_format)
-
-def check_for_malware(selected_format):
-    title = entry.get()
-    file_path = os.path.join(output_directory, f"{title}.{selected_format}")
-    if os.path.exists(file_path):
-        try:
-            cd = pyclamd.ClamdUnixSocket()
-            scan_result = cd.scan_file(file_path)
-            if scan_result[file_path] == "FOUND":
-                messagebox.showwarning("Advertencia", "Se encontró malware. Avisa a Tormenta-Devs del problema e inicia un análisis de tu computadora lo antes posible.")
-        except pyclamd.ConnectionError:
-            messagebox.showerror("Error", "No se pudo conectar al demonio ClamAV")
+def perform_download(download_command):
+    subprocess.Popen(download_command, shell=True).wait()
     enable_ui()
 
 def play_video():
