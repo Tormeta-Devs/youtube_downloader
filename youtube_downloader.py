@@ -32,9 +32,9 @@ def download_audio_or_video():
         video_url = f"https://www.youtube.com/watch?v={selected_id}"
         selected_format = format_combobox.get()
         if selected_format == "webm":
-            download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -f bestvideo {video_url}"
+            download_command = f"youtube-dl -o {output_directory}/%(title)s.%(ext)s -f bestvideo {video_url}"
         else:
-            download_command = f"youtube-dl -o {output_directory}%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
+            download_command = f"youtube-dl -o {output_directory}/%(title)s.%(ext)s -x --audio-format {selected_format} {video_url}"
         subprocess.Popen(download_command, shell=True)
         check_for_malware()
 
