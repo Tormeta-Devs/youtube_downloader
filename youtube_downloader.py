@@ -3,6 +3,7 @@ import subprocess
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter.ttk import Combobox
+from xml.etree import ElementTree as ET
 from youtubesearchpython import Search
 import webbrowser
 import threading
@@ -17,6 +18,28 @@ def select_directory():
     directory_label.config(text=output_directory)
     update_download_button_state()
 
+def load_messages(language):
+    messages_path = os.path.join("lang", f"messages_{language}.xml")
+    if not os.path.exists(messages_path):
+        print(f"Error: No se encontró el archivo de mensajes para el idioma {language}")
+        return {}
+    
+    messages = {}
+    try:
+        tree = ET.parse(messages_path)
+        root = tree.getroot()
+        for child in root:
+            for subchild in child:
+                messages[subchild.tag] = subchild.text
+    except Exception as e:
+        print(f"Error al cargar mensajes desde {messages_path}: {e}")
+    
+    return messages
+
+def change_language(language):
+    global messages
+    messages = load_messages(language)
+
 def search_youtube(*args):
     search_query = entry.get()
     allSearch = Search(search_query, limit=10)
@@ -30,7 +53,7 @@ def search_youtube(*args):
 def download_audio_or_video():
     global download_counter
     if not output_directory:
-        messagebox.showerror("Error", "Antes de descargar, selecciona un directorio")
+        messagebox.showerror("Error", messages["select_directory"])
         return
     selected_index = result_listbox.curselection()
     if selected_index:
@@ -63,6 +86,7 @@ def update_download_button_state():
 def on_enter_key_pressed(event):
     search_youtube()
 
+## UI's Codes
 def disable_ui():
     for widget in (entry, search_button, result_listbox, directory_button, format_combobox, play_button):
         widget.config(state=tk.DISABLED)
@@ -73,21 +97,15 @@ def enable_ui():
         widget.config(state=tk.NORMAL)
     window.config(cursor="")
 
-def check_ffmpeg():
-    try:
-        subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-    except subprocess.CalledProcessError:
-        install_ffmpeg_with_winget()
-
-def install_ffmpeg_with_winget():
-    try:
-        subprocess.run(["winget", "install", "ffmpeg"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        messagebox.showinfo("Info", "FFmpeg se ha instalado correctamente.")
-    except subprocess.CalledProcessError as e:
-        messagebox.showerror("Error", f"No se pudo instalar FFmpeg: {e.stderr}")
+def update_download_button_state():
+    if output_directory:
+        download_button.config(state=tk.NORMAL)
+    else:
+        download_button.config(state=tk.DISABLED)
 
 def update_title():
-    window.title(f"YouTube-Downloader | FFmpeg: {get_ffmpeg_version()} | Descargas: {download_counter}")
+    ffmpeg_version = get_ffmpeg_version()
+    window.title(f"YouTube-Downloader | FFmpeg: {ffmpeg_version} | Descargas: {download_counter}")
 
 def get_ffmpeg_version():
     try:
@@ -99,13 +117,10 @@ def get_ffmpeg_version():
         print(f"Error al obtener la versión de FFmpeg: {e}")
         return "Desconocida"
 
-# Verificar si FFmpeg está instalado
-check_ffmpeg()
-
 # Crear ventana
 window = tk.Tk()
 window.title("YouTube-Downloader")
-window.geometry("600x300")
+window.geometry("500x400")
 window.resizable(False, False)
 
 # Entrada de búsqueda
@@ -149,6 +164,22 @@ directory_label.pack()
 download_counter_label = tk.Label(window, text=f"Descargas: {download_counter}")
 download_counter_label.pack()
 
+menubar = tk.Menu(window)
+window.config(menu=menubar)
+
+options_menu = tk.Menu(menubar, tearoff=False)
+menubar.add_cascade(label="Opciones", menu=options_menu)
+
+language_menu = tk.Menu(options_menu, tearoff=False)
+options_menu.add_cascade(label="Idioma", menu=language_menu)
+
+languages = ["es", "en"]  # Ejemplo de idiomas disponibles
+default_language = "es"  # Idioma por defecto
+
+for language in languages:
+    language_menu.add_radiobutton(label=language, command=lambda lang=language: change_language(lang))
+language_menu.invoke(default_language)
+
 # Funciones auxiliares
 video_ids = []
 
@@ -178,24 +209,7 @@ def check_ffmpeg():
     try:
         subprocess.run(["ffmpeg", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
     except subprocess.CalledProcessError:
-        install_ffmpeg_with_winget()
-
-def install_ffmpeg_with_winget():
-    try:
-        subprocess.run(["winget", "install", "ffmpeg"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-        messagebox.showinfo("Info", "FFmpeg se ha instalado correctamente.")
-    except subprocess.CalledProcessError as e:
-        messagebox.showerror("Error", f"No se pudo instalar FFmpeg: {e.stderr}")
-
-def get_ffmpeg_version():
-    try:
-        version_output = subprocess.check_output(["ffmpeg", "-version"]).decode("utf-8")
-        version_line = version_output.splitlines()[0]
-        version = version_line.split("version ")[1].split(" ")[0]
-        return version
-    except Exception as e:
-        print(f"Error al obtener la versión de FFmpeg: {e}")
-        return "Desconocida"
+        pass
 
 # Verificar si FFmpeg está instalado
 check_ffmpeg()

@@ -1,0 +1,7 @@
+<messages>
+    <select_directory>Antes de descargar, selecciona un directorio.</select_directory>
+    <download_error>Error al descargar el archivo.</download_error>
+    <search_button>Buscar</search_button>
+    <download_button>Descargar</download_button>
+    <play_button>Reproducir</play_button>
+</messages>
