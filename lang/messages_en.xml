@@ -1,7 +1,13 @@
 <messages>
-    <select_directory>Before downloading, select a directory.</select_directory>
-    <download_error>Error downloading the file.</download_error>
-    <search_button>Search</search_button>
+    <language_name>English</language_name>
+    <window_title>YouTube-Downloader</window_title>
+    <search_button>Search on YouTube</search_button>
+    <directory_button>Select directory</directory_button>
     <download_button>Download</download_button>
     <play_button>Play</play_button>
+    <directory_label>Output directory:</directory_label>
+    <download_counter_label>Downloads</download_counter_label>
+    <select_directory>Please select an output directory.</select_directory>
+    <select_directory>Please select an output directory.</select_directory>
+    <select_video>Please select a video from the list.</select_video>
 </messages>

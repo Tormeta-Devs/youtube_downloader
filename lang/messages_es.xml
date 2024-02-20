@@ -1,7 +1,13 @@
 <messages>
-    <select_directory>Antes de descargar, selecciona un directorio.</select_directory>
-    <download_error>Error al descargar el archivo.</download_error>
-    <search_button>Buscar</search_button>
+    <language_name>Español</language_name>
+    <window_title>YouTube-Downloader</window_title>
+    <search_button>Buscar en YouTube</search_button>
+    <directory_button>Seleccionar directorio</directory_button>
     <download_button>Descargar</download_button>
     <play_button>Reproducir</play_button>
+    <directory_label>Directorio de salida:</directory_label>
+    <download_counter_label>Descargas</download_counter_label>
+    <select_directory>Por favor, selecciona un directorio de salida.</select_directory>
+    <select_directory>Por favor, selecciona un directorio de salida.</select_directory>
+    <select_video>Por favor, selecciona un video de la lista.</select_video>
 </messages>
