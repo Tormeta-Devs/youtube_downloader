@@ -18,6 +18,9 @@ default_language = "es"  # Idioma por defecto
 language_index = 0  # Índice del idioma en el menú
 video_ids = []
 
+# Ruta del archivo de configuración
+config_file = "config.txt"
+
 def load_messages(language):
     global messages
     messages_path = os.path.join("lang", f"messages_{language}.xml")
@@ -34,12 +37,28 @@ def load_messages(language):
     
     return messages
 
+def save_language(language):
+    with open(config_file, "w") as f:
+        f.write(language)
+
+def load_language():
+    if os.path.exists(config_file):
+        with open(config_file, "r") as f:
+            return f.read().strip()
+    else:
+        return default_language
+
 def change_language(language):
     global messages, language_index
     messages = load_messages(language)
     language_index = languages.index(language)
-    language_menu.entryconfig(language_index, label=messages.get('language_name', language.capitalize()))
-    window.title(messages.get('window_title', 'YouTube-Downloader'))
+    save_language(language)
+    window.title(messages.get('window_title', 'YouTube-Downloader') + f" | FFmpeg: {get_ffmpeg_version()}" + f" | Descargas: {download_counter}")
+    update_button_texts()
+
+def check_ffmpeg_update():
+    subprocess.Popen(["winget", "upgrade", "ffmpeg"]).wait()
+    messagebox.showinfo(messages.get('ffmpeg_update_title', 'FFmpeg Update'), messages.get('ffmpeg_update_message', 'FFmpeg ha sido actualizado.'))
 
 def search_youtube(*args):
     search_query = entry.get()
@@ -86,6 +105,18 @@ def get_ffmpeg_version():
         print(f"Error al obtener la versión de FFmpeg: {e}")
         return "Desconocida"
 
+def update_button_texts():
+    search_button.config(text=messages.get('search_button', 'Buscar en YouTube'))
+    directory_button.config(text=messages.get('directory_button', 'Cambiar Directorio'))
+    download_button.config(text=messages.get('download_button', 'Descargar'))
+    update_language_menu()
+
+def update_language_menu():
+    global language_menu
+    language_menu.delete(0, tk.END)  # Limpiar el menú existente
+    for lang in languages:
+        language_menu.add_command(label=messages.get(f'language_name_{lang}', lang.capitalize()), command=lambda l=lang: change_language(l))
+
 # Crear ventana
 window = tk.Tk()
 window.title("YouTube-Downloader")
@@ -94,38 +125,51 @@ window.resizable(False, False)
 
 # Menú de idioma
 language_menu = tk.Menu(window)
-for lang in languages:
-    language_menu.add_command(label=lang.capitalize(), command=lambda l=lang: change_language(l))
+update_language_menu()
 window.config(menu=language_menu)
+
+# Sección de ajustes
+settings_menu = tk.Menu(window)
+language_submenu = tk.Menu(settings_menu, tearoff=0)
+settings_menu.add_cascade(label=messages.get('languages', 'Languages'), menu=language_submenu)
+language_submenu.add_command(label="Spanish", command=lambda: change_language('es'))
+language_submenu.add_command(label="English", command=lambda: change_language('en'))
+settings_menu.add_command(label="Check Updates", command=check_ffmpeg_update)
+window.config(menu=settings_menu)
 
 # Campo de entrada para la búsqueda de YouTube
 entry = tk.Entry(window)
 entry.pack()
 
-# Botón para iniciar la búsqueda
-search_button = tk.Button(window, text="Buscar en YouTube", command=search_youtube)
+# Botón para buscar en YouTube
+search_button = tk.Button(window)
 search_button.pack()
 
-# Lista de resultados
+# Lista de resultados de búsqueda
 result_listbox = tk.Listbox(window)
 result_listbox.pack()
 
-# Selector de formatos
-format_combobox = Combobox(window, values=["aac", "flac", "mp3", "m4a", "opus", "vorbis", "wav", "webm"], state="readonly")
-format_combobox.current(format_combobox["values"].index(default_format))  # Establecer formato por defecto
+# Menú desplegable para seleccionar el formato de descarga
+format_combobox = Combobox(window, values=["mp3", "m4a", "opus", "vorbis", "wav", "webm"])
 format_combobox.pack()
 
-# Etiqueta para mostrar el directorio seleccionado
+# Etiqueta para el directorio seleccionado
 directory_label = tk.Label(window, text=output_directory)
 directory_label.pack()
 
 # Botón para seleccionar directorio
-directory_button = tk.Button(window, text="Seleccionar directorio", command=select_directory)
+directory_button = tk.Button(window)
 directory_button.pack()
 
-# Botón de descarga
-download_button = tk.Button(window, text="Descargar", command=download_audio_or_video)
+# Botón para iniciar la descarga
+download_button = tk.Button(window)
 download_button.pack()
+
+# Cargar los mensajes en el idioma predeterminado
+last_language = load_language()
+print("Idioma cargado:", last_language)
+change_language(last_language)
+print("Idioma después de cambio:", last_language)
 
 # Ejecutar ventana
 window.mainloop()

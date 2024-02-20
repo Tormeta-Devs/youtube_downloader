@@ -1,13 +1,9 @@
 <messages>
-    <language_name>Español</language_name>
-    <window_title>YouTube-Downloader</window_title>
     <search_button>Buscar en YouTube</search_button>
-    <directory_button>Seleccionar directorio</directory_button>
+    <directory_button>Cambiar Directorio</directory_button>
     <download_button>Descargar</download_button>
-    <play_button>Reproducir</play_button>
-    <directory_label>Directorio de salida:</directory_label>
-    <download_counter_label>Descargas</download_counter_label>
-    <select_directory>Por favor, selecciona un directorio de salida.</select_directory>
-    <select_directory>Por favor, selecciona un directorio de salida.</select_directory>
-    <select_video>Por favor, selecciona un video de la lista.</select_video>
+    <select_video>Seleccione un vídeo</select_video>
+    <select_video_message>Por favor, seleccione un vídeo de la lista.</select_video_message>
+    <language_name>Español</language_name>
+    <window_title>Descargador de YouTube</window_title>
 </messages>
