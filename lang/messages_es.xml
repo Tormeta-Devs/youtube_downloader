@@ -1,7 +1,19 @@
 <messages>
-    <select_directory>Antes de descargar, selecciona un directorio.</select_directory>
-    <download_error>Error al descargar el archivo.</download_error>
+    <window_title>YouTube-Downloader</window_title>
     <search_button>Buscar</search_button>
+    <directory_button>Cambiar Directorio</directory_button>
     <download_button>Descargar</download_button>
-    <play_button>Reproducir</play_button>
+    <play_button>Escuchar</play_button>
+    <language_name_es>Español</language_name_es>
+    <language_name_en>Inglés</language_name_en>
+    <ffmpeg_update_title>Actualización de FFmpeg</ffmpeg_update_title>
+    <ffmpeg_update_message>FFmpeg ha sido actualizado.</ffmpeg_update_message>
+    <select_video>Error</select_video>
+    <select_video_message>Por favor, selecciona un video de la lista.</select_video_message>
+    <edit_gui_title>Editar GUI</edit_gui_title>
+    <save_button>Guardar</save_button>
+    <restore_button>Restaurar</restore_button>
+    <exit_button>Salir</exit_button>
+    <save_info>Configuración guardada exitosamente.</save_info>
+    <restore_info>Configuración restaurada.</restore_info>
 </messages>
