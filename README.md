@@ -36,6 +36,40 @@ La idea es evitar procesos largos o paginas poco confiables: buscas, seleccionas
 - `Pillow`, necesario para mostrar miniaturas.
 - `FFmpeg`, necesario para convertir audio y combinar video/audio.
 
+## Instalador para Windows
+
+El proyecto incluye una carpeta `app/` con todo lo necesario para crear un instalador `.exe`.
+
+El instalador:
+
+- Copia la app a `%LOCALAPPDATA%\TormentaDevs\YouTubeDownloader`.
+- Crea un entorno Python local para la app.
+- Instala las dependencias de `requirements.txt`.
+- Puede instalar `FFmpeg` con `winget` si no existe.
+- Crea un acceso directo en el escritorio.
+- Crea una entrada de desinstalacion en Windows.
+- Guarda datos de instalacion en `app/install.json`.
+- Usa `app/launcher.pyw` para comprobar actualizaciones antes de abrir la app.
+- Usa GitHub como fuente de updates: `Tormeta-Devs/youtube_downloader`.
+
+Para generar el instalador:
+
+```powershell
+.\app\build_installer.ps1
+```
+
+El `.exe` queda en:
+
+```text
+app\dist\YouTubeDownloaderInstaller.exe
+```
+
+Desde la app instalada tambien puedes ir a `About` para buscar actualizaciones o abrir el desinstalador.
+
+El desinstalador pregunta si quieres conservar la carpeta instalada y si quieres intentar eliminar `FFmpeg`. Lo recomendado es conservar `FFmpeg` si lo usan otros programas.
+
+## Instalacion manual
+
 Puedes instalar las librerias de Python con:
 
 ```bash
@@ -115,6 +149,40 @@ The goal is to avoid long workflows or unreliable websites: search, select, choo
 - `yt-dlp`, recommended for searching and downloading.
 - `Pillow`, required for thumbnails.
 - `FFmpeg`, required for audio conversion and video/audio merging.
+
+## Windows Installer
+
+The project includes an `app/` folder with everything needed to build an installer `.exe`.
+
+The installer:
+
+- Copies the app to `%LOCALAPPDATA%\TormentaDevs\YouTubeDownloader`.
+- Creates a local Python environment for the app.
+- Installs dependencies from `requirements.txt`.
+- Can install `FFmpeg` with `winget` if missing.
+- Creates a desktop shortcut.
+- Creates a Windows uninstall entry.
+- Saves install metadata in `app/install.json`.
+- Uses `app/launcher.pyw` to check for updates before opening the app.
+- Uses GitHub as the update source: `Tormeta-Devs/youtube_downloader`.
+
+To build the installer:
+
+```powershell
+.\app\build_installer.ps1
+```
+
+The `.exe` will be generated at:
+
+```text
+app\dist\YouTubeDownloaderInstaller.exe
+```
+
+From the installed app, you can also open `About` to check for updates or launch the uninstaller.
+
+The uninstaller asks whether to keep the installed folder and whether to try removing `FFmpeg`. Keeping `FFmpeg` is recommended if other programs use it.
+
+## Manual Install
 
 Install Python dependencies with:
 

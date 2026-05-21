@@ -73,4 +73,17 @@
     <toggle_theme>Toggle theme</toggle_theme>
     <selected_label>Current selection</selected_label>
     <no_selection>Choose a result to see details.</no_selection>
+    <about_settings>About</about_settings>
+    <about_app>About</about_app>
+    <app_updates>Check for updates</app_updates>
+    <uninstall_app>Uninstall app</uninstall_app>
+    <installed_only_title>Install required</installed_only_title>
+    <installed_only_message>This option only works when the app is installed in AppData.</installed_only_message>
+    <updater_missing_title>Updater unavailable</updater_missing_title>
+    <updater_missing_message>The updater was not found inside the app folder.</updater_missing_message>
+    <uninstall_confirm_title>Uninstall</uninstall_confirm_title>
+    <uninstall_confirm_message>The uninstaller will open and the app will close.</uninstall_confirm_message>
+    <about_message>YouTube Downloader
+Tormenta-Devs
+Repository: Tormeta-Devs/youtube_downloader</about_message>
 </messages>

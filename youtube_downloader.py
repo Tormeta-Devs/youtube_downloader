@@ -169,6 +169,17 @@ FALLBACK_MESSAGES = {
         "toggle_theme": "Cambiar tema",
         "selected_label": "Seleccion actual",
         "no_selection": "Elegi un resultado para ver el detalle.",
+        "about_settings": "About",
+        "about_app": "Acerca de",
+        "app_updates": "Buscar actualizaciones",
+        "uninstall_app": "Desinstalar app",
+        "installed_only_title": "Instalacion requerida",
+        "installed_only_message": "Esta opcion solo funciona cuando la app esta instalada en AppData.",
+        "updater_missing_title": "Updater no disponible",
+        "updater_missing_message": "No se encontro el actualizador en la carpeta app.",
+        "uninstall_confirm_title": "Desinstalar",
+        "uninstall_confirm_message": "Se abrira el desinstalador y la app se cerrara.",
+        "about_message": "YouTube Downloader\nTormenta-Devs\nRepositorio: Tormeta-Devs/youtube_downloader",
     },
     "en": {
         "window_title": APP_NAME,
@@ -245,6 +256,17 @@ FALLBACK_MESSAGES = {
         "toggle_theme": "Toggle theme",
         "selected_label": "Current selection",
         "no_selection": "Choose a result to see details.",
+        "about_settings": "About",
+        "about_app": "About",
+        "app_updates": "Check for updates",
+        "uninstall_app": "Uninstall app",
+        "installed_only_title": "Install required",
+        "installed_only_message": "This option only works when the app is installed in AppData.",
+        "updater_missing_title": "Updater unavailable",
+        "updater_missing_message": "The updater was not found inside the app folder.",
+        "uninstall_confirm_title": "Uninstall",
+        "uninstall_confirm_message": "The uninstaller will open and the app will close.",
+        "about_message": "YouTube Downloader\nTormenta-Devs\nRepository: Tormeta-Devs/youtube_downloader",
     },
 }
 
@@ -450,6 +472,13 @@ class YouTubeDownloaderApp:
         self.tools_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label=self.t("tools_label"), menu=self.tools_menu)
         self.tools_menu.add_command(label=self.t("check_updates"), command=self.update_tools)
+
+        self.about_menu = tk.Menu(self.menu)
+        self.menu.add_cascade(label=self.t("about_settings"), menu=self.about_menu)
+        self.about_menu.add_command(label=self.t("about_app"), command=self.show_about)
+        self.about_menu.add_command(label=self.t("app_updates"), command=self.check_app_updates)
+        self.about_menu.add_separator()
+        self.about_menu.add_command(label=self.t("uninstall_app"), command=self.start_uninstall)
 
         self.root.config(menu=self.menu)
         self.refresh_language_menu()
@@ -661,9 +690,13 @@ class YouTubeDownloaderApp:
         self.menu.entryconfigure(0, label=self.t("language_settings"))
         self.menu.entryconfigure(1, label=self.t("appearance_settings"))
         self.menu.entryconfigure(2, label=self.t("tools_label"))
+        self.menu.entryconfigure(3, label=self.t("about_settings"))
         self.appearance_menu.entryconfigure(0, label=self.t("theme_light"))
         self.appearance_menu.entryconfigure(1, label=self.t("theme_dark"))
         self.tools_menu.entryconfigure(0, label=self.t("check_updates"))
+        self.about_menu.entryconfigure(0, label=self.t("about_app"))
+        self.about_menu.entryconfigure(1, label=self.t("app_updates"))
+        self.about_menu.entryconfigure(3, label=self.t("uninstall_app"))
         self.refresh_language_menu()
         self.refresh_tool_status()
 
@@ -692,6 +725,7 @@ class YouTubeDownloaderApp:
         self.configure_menu_theme(self.language_menu)
         self.configure_menu_theme(self.appearance_menu)
         self.configure_menu_theme(self.tools_menu)
+        self.configure_menu_theme(self.about_menu)
         if hasattr(self, "log_box"):
             self.log_box.config(
                 bg=self.colors["log"],
@@ -723,6 +757,44 @@ class YouTubeDownloaderApp:
         self.tools_var.set(
             f"{self.t('downloader')}: {downloader_name}   |   {self.t('ffmpeg')}: {ffmpeg_version}"
         )
+
+    def is_installed_copy(self) -> bool:
+        return (BASE_DIR / "app" / "install.json").exists()
+
+    def show_about(self) -> None:
+        install_text = f"\n\nInstall path:\n{BASE_DIR}" if self.is_installed_copy() else f"\n\nDev path:\n{BASE_DIR}"
+        messagebox.showinfo(self.t("about_app"), self.t("about_message") + install_text)
+
+    def check_app_updates(self) -> None:
+        updater = BASE_DIR / "app" / "updater.py"
+        if not self.is_installed_copy():
+            messagebox.showinfo(self.t("installed_only_title"), self.t("installed_only_message"))
+            return
+        if not updater.exists():
+            messagebox.showerror(self.t("updater_missing_title"), self.t("updater_missing_message"))
+            return
+        subprocess.Popen(
+            [sys.executable, str(updater), "--gui"],
+            cwd=str(BASE_DIR),
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+        )
+
+    def start_uninstall(self) -> None:
+        uninstaller = BASE_DIR / "app" / "uninstall.py"
+        if not self.is_installed_copy():
+            messagebox.showinfo(self.t("installed_only_title"), self.t("installed_only_message"))
+            return
+        if not uninstaller.exists():
+            messagebox.showerror(self.t("updater_missing_title"), self.t("updater_missing_message"))
+            return
+        if not messagebox.askyesno(self.t("uninstall_confirm_title"), self.t("uninstall_confirm_message")):
+            return
+        subprocess.Popen(
+            [sys.executable, str(uninstaller), "--from-app"],
+            cwd=str(BASE_DIR),
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
+        )
+        self.root.after(500, self.close)
 
     def downloader_command(self) -> list[str] | None:
         if shutil.which("yt-dlp"):

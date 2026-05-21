@@ -1,3 +1,4 @@
 Lang: es
 Output: C:\Users\juane\Downloads
 Format: mp3
+Theme: dark
