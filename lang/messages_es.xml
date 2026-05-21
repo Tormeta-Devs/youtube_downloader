@@ -1,19 +1,70 @@
 <messages>
-    <window_title>YouTube-Downloader</window_title>
+    <window_title>YouTube Downloader</window_title>
+    <app_subtitle>Busca, elige formato y descarga sin salir de la app.</app_subtitle>
+    <search_placeholder>Buscar en YouTube</search_placeholder>
     <search_button>Buscar</search_button>
-    <directory_button>Cambiar Directorio</directory_button>
     <download_button>Descargar</download_button>
-    <play_button>Escuchar</play_button>
-    <language_name_es>Español</language_name_es>
-    <language_name_en>Inglés</language_name_en>
-    <ffmpeg_update_title>Actualización de FFmpeg</ffmpeg_update_title>
-    <ffmpeg_update_message>FFmpeg ha sido actualizado.</ffmpeg_update_message>
-    <select_video>Error</select_video>
-    <select_video_message>Por favor, selecciona un video de la lista.</select_video_message>
-    <edit_gui_title>Editar GUI</edit_gui_title>
-    <save_button>Guardar</save_button>
-    <restore_button>Restaurar</restore_button>
-    <exit_button>Salir</exit_button>
-    <save_info>Configuración guardada exitosamente.</save_info>
-    <restore_info>Configuración restaurada.</restore_info>
+    <directory_button>Cambiar carpeta</directory_button>
+    <open_folder_button>Abrir carpeta</open_folder_button>
+    <copy_url_button>Copiar URL</copy_url_button>
+    <open_youtube_button>YouTube</open_youtube_button>
+    <preview_button>Vista previa</preview_button>
+    <clear_button>Limpiar</clear_button>
+    <format_label>Formato</format_label>
+    <folder_label>Carpeta</folder_label>
+    <results_label>Resultados</results_label>
+    <activity_label>Actividad</activity_label>
+    <tools_label>Herramientas</tools_label>
+    <ready_status>Listo</ready_status>
+    <searching_status>Buscando...</searching_status>
+    <downloading_status>Descargando...</downloading_status>
+    <previewing_status>Preparando vista previa...</previewing_status>
+    <preview_ready_status>Vista previa abierta</preview_ready_status>
+    <preview_error_title>Error de vista previa</preview_error_title>
+    <download_complete_status>Descarga finalizada</download_complete_status>
+    <search_empty_title>Busqueda vacia</search_empty_title>
+    <search_empty_message>Escribi algo para buscar.</search_empty_message>
+    <no_results_title>Sin resultados</no_results_title>
+    <no_results_message>No se encontraron videos para esa busqueda.</no_results_message>
+    <select_video>Seleccion requerida</select_video>
+    <select_video_message>Selecciona un video de la lista.</select_video_message>
+    <missing_downloader_title>Falta yt-dlp o youtube-dl</missing_downloader_title>
+    <missing_downloader_message>Falta yt-dlp. Queres instalarlo automaticamente ahora?</missing_downloader_message>
+    <installing_downloader_status>Instalando yt-dlp...</installing_downloader_status>
+    <install_downloader_done>yt-dlp instalado. Ya podes buscar y descargar.</install_downloader_done>
+    <install_downloader_failed>No se pudo instalar yt-dlp automaticamente.</install_downloader_failed>
+    <missing_ffmpeg_title>Falta FFmpeg</missing_ffmpeg_title>
+    <missing_ffmpeg_message>Instala FFmpeg para convertir audio o combinar video.</missing_ffmpeg_message>
+    <download_error_title>Error de descarga</download_error_title>
+    <search_error_title>Error de busqueda</search_error_title>
+    <tools_updated_title>Herramientas</tools_updated_title>
+    <tools_updated_message>Proceso de actualizacion terminado.</tools_updated_message>
+    <tools_update_failed>No se pudo actualizar automaticamente.</tools_update_failed>
+    <check_updates>Actualizar herramientas</check_updates>
+    <language_settings>Idioma</language_settings>
+    <language_name_es>Espanol</language_name_es>
+    <language_name_en>Ingles</language_name_en>
+    <downloads>Descargas</downloads>
+    <duration_column>Duracion</duration_column>
+    <title_column>Titulo</title_column>
+    <channel_column>Canal</channel_column>
+    <views_column>Vistas</views_column>
+    <thumbnail_column>Foto</thumbnail_column>
+    <unknown>Desconocido</unknown>
+    <ffmpeg>FFmpeg</ffmpeg>
+    <downloader>Motor</downloader>
+    <not_found>No encontrado</not_found>
+    <copied_status>URL copiada</copied_status>
+    <folder_error_title>Carpeta no disponible</folder_error_title>
+    <folder_error_message>La carpeta elegida no existe o no se puede abrir.</folder_error_message>
+    <confirm_update_title>Actualizar herramientas</confirm_update_title>
+    <confirm_update_message>Se intentara instalar o actualizar yt-dlp y FFmpeg usando winget.</confirm_update_message>
+    <stop_button>Detener</stop_button>
+    <cancelled_status>Operacion detenida</cancelled_status>
+    <thumbnails_disabled>Pillow no esta instalado; se muestran miniaturas genericas.</thumbnails_disabled>
+    <install_pillow_title>Miniaturas</install_pillow_title>
+    <install_pillow_message>Para ver las fotos hay que instalar Pillow. Queres hacerlo automaticamente?</install_pillow_message>
+    <installing_pillow_status>Instalando Pillow...</installing_pillow_status>
+    <install_pillow_done>Pillow instalado. Cargando miniaturas...</install_pillow_done>
+    <install_pillow_failed>No se pudo instalar Pillow automaticamente.</install_pillow_failed>
 </messages>

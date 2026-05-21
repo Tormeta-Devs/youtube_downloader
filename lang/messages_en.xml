@@ -1,19 +1,66 @@
 <messages>
-    <window_title>YouTube-Downloader</window_title>
+    <window_title>YouTube Downloader</window_title>
+    <app_subtitle>Search, choose a format, and download without leaving the app.</app_subtitle>
+    <search_placeholder>Search YouTube</search_placeholder>
     <search_button>Search</search_button>
-    <directory_button>Change Directory</directory_button>
     <download_button>Download</download_button>
-    <play_button>Play</play_button>
+    <directory_button>Change folder</directory_button>
+    <open_folder_button>Open folder</open_folder_button>
+    <copy_url_button>Copy URL</copy_url_button>
+    <open_youtube_button>YouTube</open_youtube_button>
+    <clear_button>Clear</clear_button>
+    <format_label>Format</format_label>
+    <folder_label>Folder</folder_label>
+    <results_label>Results</results_label>
+    <activity_label>Activity</activity_label>
+    <tools_label>Tools</tools_label>
+    <ready_status>Ready</ready_status>
+    <searching_status>Searching...</searching_status>
+    <downloading_status>Downloading...</downloading_status>
+    <download_complete_status>Download complete</download_complete_status>
+    <search_empty_title>Empty search</search_empty_title>
+    <search_empty_message>Type something to search.</search_empty_message>
+    <no_results_title>No results</no_results_title>
+    <no_results_message>No videos were found for that search.</no_results_message>
+    <select_video>Selection required</select_video>
+    <select_video_message>Select a video from the list.</select_video_message>
+    <missing_downloader_title>yt-dlp or youtube-dl missing</missing_downloader_title>
+    <missing_downloader_message>yt-dlp is missing. Install it automatically now?</missing_downloader_message>
+    <installing_downloader_status>Installing yt-dlp...</installing_downloader_status>
+    <install_downloader_done>yt-dlp installed. You can search and download now.</install_downloader_done>
+    <install_downloader_failed>yt-dlp could not be installed automatically.</install_downloader_failed>
+    <missing_ffmpeg_title>FFmpeg missing</missing_ffmpeg_title>
+    <missing_ffmpeg_message>Install FFmpeg to convert audio or merge video.</missing_ffmpeg_message>
+    <download_error_title>Download error</download_error_title>
+    <search_error_title>Search error</search_error_title>
+    <tools_updated_title>Tools</tools_updated_title>
+    <tools_updated_message>Update process finished.</tools_updated_message>
+    <tools_update_failed>Automatic update failed.</tools_update_failed>
+    <check_updates>Update tools</check_updates>
+    <language_settings>Language</language_settings>
     <language_name_es>Spanish</language_name_es>
     <language_name_en>English</language_name_en>
-    <ffmpeg_update_title>FFmpeg Update</ffmpeg_update_title>
-    <ffmpeg_update_message>FFmpeg has been updated.</ffmpeg_update_message>
-    <select_video>Error</select_video>
-    <select_video_message>Please select a video from the list.</select_video_message>
-    <edit_gui_title>Edit GUI</edit_gui_title>
-    <save_button>Save</save_button>
-    <restore_button>Restore</restore_button>
-    <exit_button>Exit</exit_button>
-    <save_info>Configuration saved successfully.</save_info>
-    <restore_info>Configuration restored.</restore_info>
+    <downloads>Downloads</downloads>
+    <duration_column>Duration</duration_column>
+    <title_column>Title</title_column>
+    <channel_column>Channel</channel_column>
+    <views_column>Views</views_column>
+    <thumbnail_column>Cover</thumbnail_column>
+    <unknown>Unknown</unknown>
+    <ffmpeg>FFmpeg</ffmpeg>
+    <downloader>Engine</downloader>
+    <not_found>Not found</not_found>
+    <copied_status>URL copied</copied_status>
+    <folder_error_title>Folder unavailable</folder_error_title>
+    <folder_error_message>The selected folder does not exist or cannot be opened.</folder_error_message>
+    <confirm_update_title>Update tools</confirm_update_title>
+    <confirm_update_message>The app will try to install or update yt-dlp and FFmpeg using winget.</confirm_update_message>
+    <stop_button>Stop</stop_button>
+    <cancelled_status>Operation stopped</cancelled_status>
+    <thumbnails_disabled>Pillow is not installed; generic thumbnails are shown.</thumbnails_disabled>
+    <install_pillow_title>Thumbnails</install_pillow_title>
+    <install_pillow_message>Pillow is required to show covers. Install it automatically?</install_pillow_message>
+    <installing_pillow_status>Installing Pillow...</installing_pillow_status>
+    <install_pillow_done>Pillow installed. Loading thumbnails...</install_pillow_done>
+    <install_pillow_failed>Pillow could not be installed automatically.</install_pillow_failed>
 </messages>
