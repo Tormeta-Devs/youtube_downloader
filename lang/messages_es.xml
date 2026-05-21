@@ -67,4 +67,10 @@
     <installing_pillow_status>Instalando Pillow...</installing_pillow_status>
     <install_pillow_done>Pillow instalado. Cargando miniaturas...</install_pillow_done>
     <install_pillow_failed>No se pudo instalar Pillow automaticamente.</install_pillow_failed>
+    <appearance_settings>Apariencia</appearance_settings>
+    <theme_light>Modo claro</theme_light>
+    <theme_dark>Modo oscuro</theme_dark>
+    <toggle_theme>Cambiar tema</toggle_theme>
+    <selected_label>Seleccion actual</selected_label>
+    <no_selection>Elegi un resultado para ver el detalle.</no_selection>
 </messages>

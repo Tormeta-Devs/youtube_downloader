@@ -40,19 +40,57 @@ AUDIO_FORMATS = ("mp3", "m4a", "aac", "flac", "opus", "vorbis", "wav")
 VIDEO_FORMATS = ("mp4", "webm")
 ALL_FORMATS = AUDIO_FORMATS + VIDEO_FORMATS
 
-COLORS = {
-    "bg": "#f6f7fb",
-    "panel": "#ffffff",
-    "panel_alt": "#eef2f7",
-    "text": "#17202a",
-    "muted": "#64748b",
-    "line": "#d7dee8",
-    "primary": "#2563eb",
-    "primary_hover": "#1d4ed8",
-    "danger": "#b42318",
-    "ok": "#047857",
-    "log": "#101828",
+THEMES = {
+    "light": {
+        "bg": "#f6f7fb",
+        "panel": "#ffffff",
+        "panel_alt": "#eef2f7",
+        "input": "#ffffff",
+        "text": "#17202a",
+        "muted": "#64748b",
+        "line": "#d7dee8",
+        "primary": "#2563eb",
+        "primary_hover": "#1d4ed8",
+        "danger": "#b42318",
+        "danger_hover": "#912018",
+        "ok": "#047857",
+        "ok_hover": "#03694f",
+        "youtube": "#ff0033",
+        "youtube_hover": "#cc0029",
+        "tree": "#ffffff",
+        "tree_selected": "#dbeafe",
+        "tree_selected_text": "#17202a",
+        "log": "#101828",
+        "log_text": "#e5e7eb",
+        "thumb_bg": "#e5e7eb",
+        "thumb_inner": "#cbd5e1",
+    },
+    "dark": {
+        "bg": "#0b1020",
+        "panel": "#111827",
+        "panel_alt": "#1f2937",
+        "input": "#0f172a",
+        "text": "#e5e7eb",
+        "muted": "#94a3b8",
+        "line": "#334155",
+        "primary": "#3b82f6",
+        "primary_hover": "#60a5fa",
+        "danger": "#ef4444",
+        "danger_hover": "#dc2626",
+        "ok": "#10b981",
+        "ok_hover": "#059669",
+        "youtube": "#ff0033",
+        "youtube_hover": "#ff335c",
+        "tree": "#0f172a",
+        "tree_selected": "#1d4ed8",
+        "tree_selected_text": "#ffffff",
+        "log": "#020617",
+        "log_text": "#e5e7eb",
+        "thumb_bg": "#1f2937",
+        "thumb_inner": "#334155",
+    },
 }
+COLORS = THEMES["light"]
 
 
 FALLBACK_MESSAGES = {
@@ -125,6 +163,12 @@ FALLBACK_MESSAGES = {
         "installing_pillow_status": "Instalando Pillow...",
         "install_pillow_done": "Pillow instalado. Cargando miniaturas...",
         "install_pillow_failed": "No se pudo instalar Pillow automaticamente.",
+        "appearance_settings": "Apariencia",
+        "theme_light": "Modo claro",
+        "theme_dark": "Modo oscuro",
+        "toggle_theme": "Cambiar tema",
+        "selected_label": "Seleccion actual",
+        "no_selection": "Elegi un resultado para ver el detalle.",
     },
     "en": {
         "window_title": APP_NAME,
@@ -195,6 +239,12 @@ FALLBACK_MESSAGES = {
         "installing_pillow_status": "Installing Pillow...",
         "install_pillow_done": "Pillow installed. Loading thumbnails...",
         "install_pillow_failed": "Pillow could not be installed automatically.",
+        "appearance_settings": "Appearance",
+        "theme_light": "Light mode",
+        "theme_dark": "Dark mode",
+        "toggle_theme": "Toggle theme",
+        "selected_label": "Current selection",
+        "no_selection": "Choose a result to see details.",
     },
 }
 
@@ -228,6 +278,11 @@ class YouTubeDownloaderApp:
         self.selected_format = self.config.get("Format", "mp3")
         if self.selected_format not in ALL_FORMATS:
             self.selected_format = "mp3"
+        self.theme_name = self.config.get("Theme", "light")
+        if self.theme_name not in THEMES:
+            self.theme_name = "light"
+        self.colors = THEMES[self.theme_name]
+        self.set_global_colors()
 
         self.events: queue.Queue[tuple[str, object]] = queue.Queue()
         self.results: list[SearchResult] = []
@@ -248,22 +303,27 @@ class YouTubeDownloaderApp:
         self.status_var = tk.StringVar(value=self.t("ready_status"))
         self.tools_var = tk.StringVar()
         self.progress_var = tk.DoubleVar(value=0)
+        self.selected_title_var = tk.StringVar(value=self.t("no_selection"))
+        self.selected_meta_var = tk.StringVar(value="")
 
         self.root.title(APP_NAME)
         self.root.geometry("1060x680")
         self.root.minsize(900, 560)
-        self.root.configure(bg=COLORS["bg"])
+        self.root.configure(bg=self.colors["bg"])
         self.root.protocol("WM_DELETE_WINDOW", self.close)
 
         self.setup_styles()
         self.create_menu()
         self.create_layout()
-        self.refresh_tool_status()
-        self.update_texts()
+        self.apply_theme()
         self.poll_events()
 
     def t(self, key: str, fallback: str | None = None) -> str:
         return self.messages.get(key) or FALLBACK_MESSAGES[self.language].get(key, fallback or key)
+
+    def set_global_colors(self) -> None:
+        global COLORS
+        COLORS = self.colors
 
     def load_config(self) -> dict[str, str]:
         config: dict[str, str] = {}
@@ -281,6 +341,7 @@ class YouTubeDownloaderApp:
         self.config["Lang"] = self.language
         self.config["Output"] = str(self.output_directory)
         self.config["Format"] = self.format_var.get()
+        self.config["Theme"] = self.theme_name
         lines = [f"{key}: {value}" for key, value in self.config.items()]
         CONFIG_FILE.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -301,6 +362,8 @@ class YouTubeDownloaderApp:
         return messages
 
     def setup_styles(self) -> None:
+        self.set_global_colors()
+        colors = self.colors
         style = ttk.Style(self.root)
         try:
             style.theme_use("clam")
@@ -314,36 +377,75 @@ class YouTubeDownloaderApp:
         self.root.option_add("*Font", default_font)
         self.root.option_add("*tearOff", False)
 
-        style.configure("App.TFrame", background=COLORS["bg"])
-        style.configure("Panel.TFrame", background=COLORS["panel"])
-        style.configure("Soft.TFrame", background=COLORS["panel_alt"])
-        style.configure("Title.TLabel", background=COLORS["bg"], foreground=COLORS["text"], font=title_font)
-        style.configure("Subtitle.TLabel", background=COLORS["bg"], foreground=COLORS["muted"])
-        style.configure("Panel.TLabel", background=COLORS["panel"], foreground=COLORS["text"])
-        style.configure("Muted.TLabel", background=COLORS["panel"], foreground=COLORS["muted"])
-        style.configure("Section.TLabel", background=COLORS["panel"], foreground=COLORS["text"], font=section_font)
-        style.configure("Status.TLabel", background=COLORS["bg"], foreground=COLORS["muted"])
-        style.configure("TButton", padding=(14, 8), background=COLORS["panel"], foreground=COLORS["text"])
-        style.map("TButton", background=[("active", COLORS["panel_alt"])])
-        style.configure("Primary.TButton", padding=(16, 8), background=COLORS["primary"], foreground="#ffffff")
-        style.map("Primary.TButton", background=[("active", COLORS["primary_hover"]), ("disabled", COLORS["line"])])
-        style.configure("Danger.TButton", padding=(16, 8), background=COLORS["danger"], foreground="#ffffff")
-        style.map("Danger.TButton", background=[("active", "#912018"), ("disabled", COLORS["line"])])
-        style.configure("TEntry", fieldbackground="#ffffff", bordercolor=COLORS["line"], lightcolor=COLORS["line"])
-        style.configure("TCombobox", fieldbackground="#ffffff", background="#ffffff")
-        style.configure("Treeview", rowheight=62, background="#ffffff", fieldbackground="#ffffff", foreground=COLORS["text"])
-        style.configure("Treeview.Heading", padding=(8, 8), background=COLORS["panel_alt"], foreground=COLORS["text"])
-        style.configure("Horizontal.TProgressbar", background=COLORS["primary"], troughcolor=COLORS["panel_alt"])
-        style.configure("YouTube.TButton", padding=(16, 8), background="#ff0033", foreground="#ffffff")
-        style.map("YouTube.TButton", background=[("active", "#cc0029"), ("disabled", COLORS["line"])])
-        style.configure("Preview.TButton", padding=(16, 8), background=COLORS["ok"], foreground="#ffffff")
-        style.map("Preview.TButton", background=[("active", "#03694f"), ("disabled", COLORS["line"])])
+        style.configure("App.TFrame", background=colors["bg"])
+        style.configure("Panel.TFrame", background=colors["panel"])
+        style.configure("Soft.TFrame", background=colors["panel_alt"])
+        style.configure("Title.TLabel", background=colors["bg"], foreground=colors["text"], font=title_font)
+        style.configure("Subtitle.TLabel", background=colors["bg"], foreground=colors["muted"])
+        style.configure("Panel.TLabel", background=colors["panel"], foreground=colors["text"])
+        style.configure("Muted.TLabel", background=colors["panel"], foreground=colors["muted"])
+        style.configure("SoftPanel.TLabel", background=colors["panel_alt"], foreground=colors["text"])
+        style.configure("SoftMuted.TLabel", background=colors["panel_alt"], foreground=colors["muted"])
+        style.configure("SoftSection.TLabel", background=colors["panel_alt"], foreground=colors["text"], font=section_font)
+        style.configure("Section.TLabel", background=colors["panel"], foreground=colors["text"], font=section_font)
+        style.configure("Status.TLabel", background=colors["bg"], foreground=colors["muted"])
+        style.configure("TButton", padding=(14, 8), background=colors["panel"], foreground=colors["text"])
+        style.map("TButton", background=[("active", colors["panel_alt"]), ("disabled", colors["line"])])
+        style.configure("Primary.TButton", padding=(16, 8), background=colors["primary"], foreground="#ffffff")
+        style.map("Primary.TButton", background=[("active", colors["primary_hover"]), ("disabled", colors["line"])])
+        style.configure("Danger.TButton", padding=(16, 8), background=colors["danger"], foreground="#ffffff")
+        style.map("Danger.TButton", background=[("active", colors["danger_hover"]), ("disabled", colors["line"])])
+        style.configure(
+            "TEntry",
+            fieldbackground=colors["input"],
+            background=colors["input"],
+            foreground=colors["text"],
+            bordercolor=colors["line"],
+            lightcolor=colors["line"],
+            insertcolor=colors["text"],
+        )
+        style.configure(
+            "TCombobox",
+            fieldbackground=colors["input"],
+            background=colors["input"],
+            foreground=colors["text"],
+            arrowcolor=colors["muted"],
+        )
+        style.map(
+            "TCombobox",
+            fieldbackground=[("readonly", colors["input"])],
+            foreground=[("readonly", colors["text"])],
+        )
+        style.configure(
+            "Treeview",
+            rowheight=62,
+            background=colors["tree"],
+            fieldbackground=colors["tree"],
+            foreground=colors["text"],
+            bordercolor=colors["line"],
+        )
+        style.map(
+            "Treeview",
+            background=[("selected", colors["tree_selected"])],
+            foreground=[("selected", colors["tree_selected_text"])],
+        )
+        style.configure("Treeview.Heading", padding=(8, 8), background=colors["panel_alt"], foreground=colors["text"])
+        style.configure("Horizontal.TProgressbar", background=colors["primary"], troughcolor=colors["panel_alt"])
+        style.configure("YouTube.TButton", padding=(16, 8), background=colors["youtube"], foreground="#ffffff")
+        style.map("YouTube.TButton", background=[("active", colors["youtube_hover"]), ("disabled", colors["line"])])
+        style.configure("Preview.TButton", padding=(16, 8), background=colors["ok"], foreground="#ffffff")
+        style.map("Preview.TButton", background=[("active", colors["ok_hover"]), ("disabled", colors["line"])])
 
     def create_menu(self) -> None:
         self.menu = tk.Menu(self.root)
 
         self.language_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label=self.t("language_settings"), menu=self.language_menu)
+
+        self.appearance_menu = tk.Menu(self.menu)
+        self.menu.add_cascade(label=self.t("appearance_settings"), menu=self.appearance_menu)
+        self.appearance_menu.add_command(label=self.t("theme_light"), command=lambda: self.change_theme("light"))
+        self.appearance_menu.add_command(label=self.t("theme_dark"), command=lambda: self.change_theme("dark"))
 
         self.tools_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label=self.t("tools_label"), menu=self.tools_menu)
@@ -373,7 +475,9 @@ class YouTubeDownloaderApp:
         self.subtitle_label = ttk.Label(header, style="Subtitle.TLabel")
         self.subtitle_label.grid(row=1, column=0, sticky="w", pady=(3, 0))
         self.tools_label = ttk.Label(header, textvariable=self.tools_var, style="Status.TLabel")
-        self.tools_label.grid(row=0, column=1, rowspan=2, sticky="e")
+        self.tools_label.grid(row=0, column=1, sticky="e")
+        self.theme_button = ttk.Button(header, command=self.toggle_theme)
+        self.theme_button.grid(row=1, column=1, sticky="e", pady=(6, 0))
 
         body = ttk.Frame(shell, style="Panel.TFrame", padding=16)
         body.grid(row=1, column=0, sticky="nsew")
@@ -418,6 +522,7 @@ class YouTubeDownloaderApp:
         self.results_tree.column("duration", width=80, minwidth=70, anchor=tk.CENTER)
         self.results_tree.column("views", width=90, minwidth=80, anchor=tk.E)
         self.results_tree.bind("<Double-1>", lambda _event: self.download())
+        self.results_tree.bind("<<TreeviewSelect>>", lambda _event: self.update_selection_panel())
 
         tree_scroll = ttk.Scrollbar(results_panel, orient=tk.VERTICAL, command=self.results_tree.yview)
         tree_scroll.grid(row=1, column=1, sticky="ns")
@@ -472,14 +577,35 @@ class YouTubeDownloaderApp:
         self.stop_button = ttk.Button(actions, style="Danger.TButton", command=self.stop_operation)
         self.stop_button.grid(row=3, column=0, columnspan=2, sticky="ew", pady=(8, 0))
 
+        selected_panel = ttk.Frame(side, style="Soft.TFrame", padding=12)
+        selected_panel.grid(row=5, column=0, sticky="ew", pady=(18, 0))
+        selected_panel.columnconfigure(0, weight=1)
+
+        self.selected_label = ttk.Label(selected_panel, style="SoftSection.TLabel")
+        self.selected_label.grid(row=0, column=0, sticky="w")
+        self.selected_title_label = ttk.Label(
+            selected_panel,
+            textvariable=self.selected_title_var,
+            style="SoftPanel.TLabel",
+            wraplength=330,
+        )
+        self.selected_title_label.grid(row=1, column=0, sticky="ew", pady=(8, 0))
+        self.selected_meta_label = ttk.Label(
+            selected_panel,
+            textvariable=self.selected_meta_var,
+            style="SoftMuted.TLabel",
+            wraplength=330,
+        )
+        self.selected_meta_label.grid(row=2, column=0, sticky="ew", pady=(4, 0))
+
         self.activity_label = ttk.Label(side, style="Section.TLabel")
-        self.activity_label.grid(row=5, column=0, sticky="w", pady=(20, 8))
+        self.activity_label.grid(row=6, column=0, sticky="w", pady=(18, 8))
 
         self.progress_bar = ttk.Progressbar(side, variable=self.progress_var, maximum=100, mode="determinate")
-        self.progress_bar.grid(row=6, column=0, sticky="ew")
+        self.progress_bar.grid(row=7, column=0, sticky="ew")
 
         self.status_label = ttk.Label(side, textvariable=self.status_var, style="Muted.TLabel")
-        self.status_label.grid(row=7, column=0, sticky="ew", pady=(8, 0))
+        self.status_label.grid(row=8, column=0, sticky="ew", pady=(8, 0))
 
         self.log_box = tk.Text(
             side,
@@ -508,6 +634,7 @@ class YouTubeDownloaderApp:
         )
         self.title_label.config(text=self.t("window_title"))
         self.subtitle_label.config(text=self.t("app_subtitle"))
+        self.theme_button.config(text=self.t("theme_dark") if self.theme_name == "light" else self.t("theme_light"))
         self.search_button.config(text=self.t("search_button"))
         self.clear_button.config(text=self.t("clear_button"))
         self.results_label.config(text=self.t("results_label"))
@@ -520,6 +647,10 @@ class YouTubeDownloaderApp:
         self.preview_button.config(text=self.t("preview_button"))
         self.open_youtube_button.config(text=self.t("open_youtube_button"))
         self.activity_label.config(text=self.t("activity_label"))
+        self.selected_label.config(text=self.t("selected_label"))
+        if not self.selected_result():
+            self.selected_title_var.set(self.t("no_selection"))
+            self.selected_meta_var.set("")
         self.stop_button.config(text=self.t("stop_button"))
         self.results_tree.heading("#0", text=self.t("thumbnail_column"))
         self.results_tree.heading("title", text=self.t("title_column"))
@@ -528,7 +659,10 @@ class YouTubeDownloaderApp:
         self.results_tree.heading("views", text=self.t("views_column"))
 
         self.menu.entryconfigure(0, label=self.t("language_settings"))
-        self.menu.entryconfigure(1, label=self.t("tools_label"))
+        self.menu.entryconfigure(1, label=self.t("appearance_settings"))
+        self.menu.entryconfigure(2, label=self.t("tools_label"))
+        self.appearance_menu.entryconfigure(0, label=self.t("theme_light"))
+        self.appearance_menu.entryconfigure(1, label=self.t("theme_dark"))
         self.tools_menu.entryconfigure(0, label=self.t("check_updates"))
         self.refresh_language_menu()
         self.refresh_tool_status()
@@ -539,6 +673,49 @@ class YouTubeDownloaderApp:
         self.status_var.set(self.t("ready_status"))
         self.update_texts()
         self.save_config()
+
+    def toggle_theme(self) -> None:
+        self.change_theme("dark" if self.theme_name == "light" else "light")
+
+    def change_theme(self, theme_name: str) -> None:
+        if theme_name not in THEMES:
+            return
+        self.theme_name = theme_name
+        self.colors = THEMES[theme_name]
+        self.setup_styles()
+        self.apply_theme()
+        self.save_config()
+
+    def apply_theme(self) -> None:
+        self.root.configure(bg=self.colors["bg"])
+        self.configure_menu_theme(self.menu)
+        self.configure_menu_theme(self.language_menu)
+        self.configure_menu_theme(self.appearance_menu)
+        self.configure_menu_theme(self.tools_menu)
+        if hasattr(self, "log_box"):
+            self.log_box.config(
+                bg=self.colors["log"],
+                fg=self.colors["log_text"],
+                insertbackground=self.colors["log_text"],
+            )
+        if hasattr(self, "placeholder_thumbnail"):
+            self.placeholder_thumbnail = self.create_placeholder_thumbnail()
+            for item in self.results_tree.get_children():
+                if item not in self.thumbnail_images:
+                    self.results_tree.item(item, image=self.placeholder_thumbnail)
+        self.update_texts()
+
+    def configure_menu_theme(self, menu: tk.Menu) -> None:
+        try:
+            menu.config(
+                bg=self.colors["panel"],
+                fg=self.colors["text"],
+                activebackground=self.colors["panel_alt"],
+                activeforeground=self.colors["text"],
+                borderwidth=0,
+            )
+        except tk.TclError:
+            pass
 
     def refresh_tool_status(self) -> None:
         downloader_name = self.downloader_display_name()
@@ -751,6 +928,7 @@ class YouTubeDownloaderApp:
         if results:
             self.results_tree.selection_set("0")
             self.results_tree.focus("0")
+            self.update_selection_panel()
             self.log(f"{len(results)} {self.t('results_label').lower()}")
             self.status_var.set(self.t("ready_status"))
             self.load_result_thumbnails(results, generation)
@@ -766,6 +944,26 @@ class YouTubeDownloaderApp:
             return self.results[int(selection[0])]
         except (ValueError, IndexError):
             return None
+
+    def update_selection_panel(self) -> None:
+        result = self.selected_result()
+        if not result:
+            self.selected_title_var.set(self.t("no_selection"))
+            self.selected_meta_var.set("")
+            return
+
+        duration = self.format_duration(result.duration)
+        views = self.format_number(result.views)
+        parts = []
+        if result.channel:
+            parts.append(result.channel)
+        if duration != "-":
+            parts.append(duration)
+        if views != "-":
+            parts.append(f"{views} {self.t('views_column').lower()}")
+
+        self.selected_title_var.set(result.title)
+        self.selected_meta_var.set("  |  ".join(parts))
 
     def download(self) -> None:
         result = self.selected_result()
@@ -926,6 +1124,8 @@ class YouTubeDownloaderApp:
         if clear_search:
             self.search_var.set("")
         self.results.clear()
+        self.selected_title_var.set(self.t("no_selection"))
+        self.selected_meta_var.set("")
         for item in self.results_tree.get_children():
             self.results_tree.delete(item)
         self.progress_var.set(0)
@@ -1210,11 +1410,11 @@ class YouTubeDownloaderApp:
 
     def create_placeholder_thumbnail(self) -> tk.PhotoImage:
         image = tk.PhotoImage(width=THUMBNAIL_SIZE[0], height=THUMBNAIL_SIZE[1])
-        image.put("#e5e7eb", to=(0, 0, THUMBNAIL_SIZE[0], THUMBNAIL_SIZE[1]))
-        image.put("#cbd5e1", to=(2, 2, THUMBNAIL_SIZE[0] - 2, THUMBNAIL_SIZE[1] - 2))
+        image.put(self.colors["thumb_bg"], to=(0, 0, THUMBNAIL_SIZE[0], THUMBNAIL_SIZE[1]))
+        image.put(self.colors["thumb_inner"], to=(2, 2, THUMBNAIL_SIZE[0] - 2, THUMBNAIL_SIZE[1] - 2))
         play_left = THUMBNAIL_SIZE[0] // 2 - 7
         play_top = THUMBNAIL_SIZE[1] // 2 - 10
-        image.put("#ef4444", to=(play_left - 7, play_top, play_left + 18, play_top + 20))
+        image.put(self.colors["youtube"], to=(play_left - 7, play_top, play_left + 18, play_top + 20))
         image.put("#ffffff", to=(play_left + 1, play_top + 5, play_left + 6, play_top + 15))
         image.put("#ffffff", to=(play_left + 6, play_top + 8, play_left + 11, play_top + 12))
         return image

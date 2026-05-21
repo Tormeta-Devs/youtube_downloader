@@ -8,6 +8,7 @@
     <open_folder_button>Open folder</open_folder_button>
     <copy_url_button>Copy URL</copy_url_button>
     <open_youtube_button>YouTube</open_youtube_button>
+    <preview_button>Preview</preview_button>
     <clear_button>Clear</clear_button>
     <format_label>Format</format_label>
     <folder_label>Folder</folder_label>
@@ -17,6 +18,9 @@
     <ready_status>Ready</ready_status>
     <searching_status>Searching...</searching_status>
     <downloading_status>Downloading...</downloading_status>
+    <previewing_status>Preparing preview...</previewing_status>
+    <preview_ready_status>Preview opened</preview_ready_status>
+    <preview_error_title>Preview error</preview_error_title>
     <download_complete_status>Download complete</download_complete_status>
     <search_empty_title>Empty search</search_empty_title>
     <search_empty_message>Type something to search.</search_empty_message>
@@ -63,4 +67,10 @@
     <installing_pillow_status>Installing Pillow...</installing_pillow_status>
     <install_pillow_done>Pillow installed. Loading thumbnails...</install_pillow_done>
     <install_pillow_failed>Pillow could not be installed automatically.</install_pillow_failed>
+    <appearance_settings>Appearance</appearance_settings>
+    <theme_light>Light mode</theme_light>
+    <theme_dark>Dark mode</theme_dark>
+    <toggle_theme>Toggle theme</toggle_theme>
+    <selected_label>Current selection</selected_label>
+    <no_selection>Choose a result to see details.</no_selection>
 </messages>
